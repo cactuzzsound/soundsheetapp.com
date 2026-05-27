@@ -1,0 +1,3 @@
+# Cloudflare Pages routing
+# Serves gear/index.html for any /gear/* URL without a redirect (200 = rewrite, not redirect)
+/gear/:slug  /gear/index.html  200

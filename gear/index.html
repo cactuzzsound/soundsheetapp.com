@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gear List — SoundSheet</title>
+<meta name="description" content="Professional gear inventory, published via SoundSheet."/>
+<meta name="theme-color" content="#1A1814"/>
+<link rel="icon" type="image/png" href="../assets/app-icon.png"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --cream: #F7F2EC; --white: #FDFAF7; --dark: #1A1814; --ink: #1C1209;
+  --brown: #6B5645; --muted: #9E8878; --blue: #8BAEC6; --rose: #C9887B; --amber: #D4A252;
+  --grad: linear-gradient(90deg, #8BAEC6 0%, #A4A9B6 35%, #C9887B 68%, #D4A252 100%);
+  --nu: 'Nunito', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--nu); background: var(--dark); color: var(--cream);
+  -webkit-font-smoothing: antialiased; min-height: 100vh;
+}
+
+/* ── HEADER ── */
+header {
+  background: rgba(26,24,20,.92);
+  border-bottom: 1px solid rgba(247,242,236,.08);
+  backdrop-filter: blur(20px);
+  padding: 0 clamp(16px, 4vw, 48px);
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 10;
+}
+.header-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.header-logo img { width: 22px; height: 22px; }
+.header-logo span {
+  font-family: var(--nu); font-size: 14px; font-weight: 700;
+  color: rgba(247,242,236,.7); letter-spacing: -.01em;
+}
+.header-appstore {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 16px;
+  border: 1px solid rgba(247,242,236,.12); border-radius: 100px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+  text-transform: uppercase; color: rgba(247,242,236,.5);
+  text-decoration: none; transition: border-color .2s, color .2s;
+}
+.header-appstore:hover { border-color: rgba(247,242,236,.3); color: var(--cream); }
+
+/* ── HERO / PROFILE ── */
+.profile-section {
+  padding: clamp(36px, 6vw, 72px) clamp(16px, 4vw, 48px) clamp(24px, 4vw, 48px);
+  max-width: 840px; margin: 0 auto;
+}
+.profile-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 14px;
+  border: 1px solid rgba(247,242,236,.1); border-radius: 100px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 20px;
+}
+.profile-badge::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: #4caf70; box-shadow: 0 0 6px #4caf70;
+}
+.profile-name {
+  font-family: var(--nu); font-size: clamp(32px, 5vw, 52px);
+  font-weight: 800; letter-spacing: -.02em; line-height: 1.1;
+  color: var(--cream); margin-bottom: 10px;
+}
+.profile-sub {
+  font-family: var(--mono); font-size: 12px; letter-spacing: .14em;
+  color: var(--muted); text-transform: uppercase; margin-bottom: 28px;
+}
+.grad-line { height: 1.5px; background: var(--grad); border-radius: 2px; max-width: 200px; }
+.profile-updated {
+  margin-top: 14px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+  color: rgba(158,136,120,.45); text-transform: uppercase;
+}
+
+/* ── GEAR LIST ── */
+.gear-section {
+  padding: 0 clamp(16px, 4vw, 48px) 80px;
+  max-width: 840px; margin: 0 auto;
+}
+.category-title {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(247,242,236,.3);
+  padding: 32px 0 12px;
+  border-bottom: 1px solid rgba(247,242,236,.07);
+  margin-bottom: 12px;
+}
+.gear-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(247,242,236,.05);
+  transition: opacity .15s;
+}
+.gear-item:last-child { border-bottom: none; }
+.gear-photo {
+  width: 52px; height: 52px; border-radius: 10px;
+  object-fit: cover; flex-shrink: 0;
+  background: rgba(247,242,236,.06);
+  border: 1px solid rgba(247,242,236,.08);
+}
+.gear-photo-placeholder {
+  width: 52px; height: 52px; border-radius: 10px; flex-shrink: 0;
+  background: rgba(247,242,236,.05);
+  border: 1px solid rgba(247,242,236,.07);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.gear-info { flex: 1; min-width: 0; }
+.gear-name {
+  font-family: var(--nu); font-size: 16px; font-weight: 700;
+  color: var(--cream); letter-spacing: -.005em; margin-bottom: 3px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.gear-brand {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+  color: rgba(158,136,120,.7); text-transform: uppercase;
+}
+.gear-qty {
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  color: rgba(247,242,236,.3); flex-shrink: 0;
+}
+
+/* ── STATES ── */
+.state-container {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 60vh; padding: 40px 20px; text-align: center; gap: 16px;
+}
+.state-icon { font-size: 48px; opacity: .5; }
+.state-title {
+  font-family: var(--nu); font-size: 24px; font-weight: 700;
+  color: var(--cream);
+}
+.state-sub {
+  font-family: var(--nu); font-size: 16px; font-weight: 400;
+  color: var(--muted); max-width: 360px; line-height: 1.6;
+}
+.spinner {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2.5px solid rgba(247,242,236,.1);
+  border-top-color: var(--blue);
+  animation: spin .75s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── FOOTER ── */
+.page-footer {
+  text-align: center; padding: 32px 20px;
+  border-top: 1px solid rgba(247,242,236,.06);
+}
+.page-footer a {
+  display: inline-flex; align-items: center; gap: 8px;
+  text-decoration: none;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .1em;
+  text-transform: uppercase; color: rgba(158,136,120,.45);
+  transition: color .2s;
+}
+.page-footer a:hover { color: var(--muted); }
+.page-footer img { width: 16px; height: 16px; opacity: .4; }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="https://soundsheetapp.com" class="header-logo">
+    <img src="../assets/logo.png" alt="SoundSheet"/>
+    <span>SoundSheet</span>
+  </a>
+  <!-- TODO: Replace with actual App Store link -->
+  <a href="https://apps.apple.com/app/soundsheet/id000000000" class="header-appstore">
+    Get the App
+  </a>
+</header>
+
+<div id="app">
+  <div class="state-container" id="loading-state">
+    <div class="spinner"></div>
+    <div class="state-sub">Loading gear list…</div>
+  </div>
+</div>
+
+<div class="page-footer">
+  <a href="https://soundsheetapp.com">
+    <img src="../assets/logo.png" alt=""/>
+    Made with SoundSheet
+  </a>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// CloudKit public database reader
+// ─────────────────────────────────────────────────────────────────────────────
+//
+// Setup steps (one-time, in Apple Developer Portal):
+//   1. developer.apple.com → Certificates, IDs & Profiles → (nothing needed here)
+//   2. Go to: icloud.developer.apple.com/dashboard
+//   3. Select container: iCloud.cactuzzsound.SoundSheet
+//   4. Environment: Production
+//   5. API Access → Tokens → "+" → create a new token
+//      (no special permissions needed for reading public DB)
+//   6. Copy the token and paste it below as CLOUDKIT_TOKEN
+//
+const CLOUDKIT_TOKEN  = "TODO_PASTE_YOUR_CLOUDKIT_API_TOKEN_HERE";
+const CONTAINER       = "iCloud.cactuzzsound.SoundSheet";
+const ENV             = "production";
+const CK_BASE         = `https://api.apple-cloudkit.com/database/1/${CONTAINER}/${ENV}/public`;
+
+// ── Emoji per category ──
+const CATEGORY_ICONS = {
+  "Microphone": "🎙", "Mixer": "🎚", "Recorder": "💾", "Headphones": "🎧",
+  "Cable": "🔌", "Boom": "🎤", "Wireless": "📡", "Mount": "🔧",
+  "Camera": "📷", "Bag": "🎒", "Power": "🔋", "Monitor": "🖥",
+  "Default": "🎛"
+};
+
+function iconFor(category) {
+  return CATEGORY_ICONS[category] || CATEGORY_ICONS["Default"];
+}
+
+// ── Read slug from URL path: /gear/jan-kowalski-abc123 ──
+function slugFromPath() {
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  // parts = ["gear", "jan-kowalski-abc123"]
+  return parts.length >= 2 ? parts[parts.length - 1] : null;
+}
+
+// ── CloudKit query helper ──
+async function ckQuery(recordType, filters, sortBy) {
+  const body = { query: { recordType, filterBy: filters } };
+  if (sortBy) body.query.sortBy = sortBy;
+  const res = await fetch(`${CK_BASE}/records/query?ckAPIToken=${CLOUDKIT_TOKEN}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) throw new Error(`CloudKit error: ${res.status}`);
+  return res.json();
+}
+
+// ── Render helpers ──
+function renderError(msg) {
+  document.getElementById("app").innerHTML = `
+    <div class="state-container">
+      <div class="state-icon">📭</div>
+      <div class="state-title">Page not found</div>
+      <div class="state-sub">${msg}</div>
+    </div>`;
+}
+
+function renderUnpublished(ownerName) {
+  document.getElementById("app").innerHTML = `
+    <div class="state-container">
+      <div class="state-icon">🔒</div>
+      <div class="state-title">${ownerName || "This gear page"} is private</div>
+      <div class="state-sub">The owner has unpublished their gear list.</div>
+    </div>`;
+}
+
+function renderEmpty(ownerName) {
+  document.getElementById("app").innerHTML = `
+    <div class="profile-section">
+      <div class="profile-badge">Live gear list</div>
+      <div class="profile-name">${ownerName}</div>
+      <div class="profile-sub">Sound Professional</div>
+      <div class="grad-line"></div>
+    </div>
+    <div class="gear-section">
+      <div class="state-container" style="min-height:30vh">
+        <div class="state-icon">🎛</div>
+        <div class="state-sub">No gear items published yet.</div>
+      </div>
+    </div>`;
+}
+
+function groupByCategory(items) {
+  const groups = {};
+  for (const item of items) {
+    const cat = item.fields.category?.value || "Other";
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(item);
+  }
+  return groups;
+}
+
+function renderGear(ownerName, lastUpdated, items) {
+  const dateStr = lastUpdated
+    ? new Date(lastUpdated * 1000).toLocaleDateString("en-US", { year:"numeric", month:"long", day:"numeric" })
+    : "";
+
+  const groups = groupByCategory(items);
+  const totalItems = items.length;
+
+  let categoriesHTML = "";
+  for (const [cat, catItems] of Object.entries(groups).sort()) {
+    const icon = iconFor(cat);
+    categoriesHTML += `<div class="category-title">${icon} ${cat}</div>`;
+    for (const item of catItems) {
+      const name     = item.fields.name?.value     || "Unknown item";
+      const brand    = item.fields.brand?.value    || "";
+      const qty      = item.fields.quantityOwned?.value ?? 1;
+      const photoURL = item.fields.photoAsset?.value?.downloadURL;
+
+      const photoEl = photoURL
+        ? `<img class="gear-photo" src="${photoURL}" alt="${name}" loading="lazy"/>`
+        : `<div class="gear-photo-placeholder">${icon}</div>`;
+
+      const qtyEl = qty > 1 ? `<div class="gear-qty">×${qty}</div>` : "";
+
+      categoriesHTML += `
+        <div class="gear-item">
+          ${photoEl}
+          <div class="gear-info">
+            <div class="gear-name">${name}</div>
+            ${brand ? `<div class="gear-brand">${brand}</div>` : ""}
+          </div>
+          ${qtyEl}
+        </div>`;
+    }
+  }
+
+  document.title = `${ownerName}'s Gear — SoundSheet`;
+  document.getElementById("app").innerHTML = `
+    <div class="profile-section">
+      <div class="profile-badge">Live gear list</div>
+      <div class="profile-name">${ownerName}</div>
+      <div class="profile-sub">${totalItems} item${totalItems !== 1 ? "s" : ""} · Sound Professional</div>
+      <div class="grad-line"></div>
+      ${dateStr ? `<div class="profile-updated">Updated ${dateStr}</div>` : ""}
+    </div>
+    <div class="gear-section">${categoriesHTML}</div>`;
+}
+
+// ── No-slug landing (visited /gear directly) ──
+function renderLanding() {
+  document.title = "Gear Pages — SoundSheet";
+  document.getElementById("app").innerHTML = `
+    <div style="max-width:640px; margin:0 auto; padding:clamp(48px,8vw,96px) clamp(20px,5vw,48px) 80px; text-align:center">
+      <div style="font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:16px">Web Publish</div>
+      <div style="font-family:var(--nu);font-size:clamp(32px,6vw,52px);font-weight:800;letter-spacing:-.025em;line-height:1.05;color:var(--cream);margin-bottom:16px">
+        Your gear,<br/>online.
+      </div>
+      <div style="height:1.5px;background:linear-gradient(90deg,#8BAEC6,#A4A9B6,#C9887B,#D4A252);border-radius:2px;max-width:160px;margin:0 auto 28px"></div>
+      <p style="font-family:var(--nu);font-size:17px;font-weight:300;color:rgba(158,136,120,.8);line-height:1.65;max-width:480px;margin:0 auto 36px">
+        SoundSheet lets you publish your full kit inventory as a shareable web page — always synced from the app via iCloud.
+      </p>
+      <div style="display:inline-block;padding:14px 24px;background:rgba(247,242,236,.05);border:1px solid rgba(247,242,236,.1);border-radius:12px;font-family:var(--mono);font-size:14px;color:rgba(158,136,120,.8);margin-bottom:36px">
+        soundsheetapp.com/gear/<strong style="color:#D4A252">your-name</strong>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:40px;font-family:var(--nu);font-size:15px;color:rgba(247,242,236,.6)">
+        <span>☁ Syncs automatically via iCloud</span>
+        <span>📷 Photos &amp; item details included</span>
+        <span>🔗 One shareable link for clients &amp; producers</span>
+      </div>
+      <a href="https://apps.apple.com/app/soundsheet/id000000000"
+         style="display:inline-flex;align-items:center;gap:12px;padding:13px 26px;background:#F7F2EC;border-radius:14px;text-decoration:none;box-shadow:0 6px 24px rgba(0,0,0,.35)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#1C1209">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+        <span style="text-align:left">
+          <span style="font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--brown);display:block">Get it on the</span>
+          <span style="font-family:var(--nu);font-size:18px;font-weight:800;color:var(--ink);display:block">App Store</span>
+        </span>
+      </a>
+    </div>`;
+}
+
+// ── Main ──
+async function main() {
+  const slug = slugFromPath();
+  if (!slug) {
+    renderLanding();
+    return;
+  }
+
+  if (CLOUDKIT_TOKEN === "TODO_PASTE_YOUR_CLOUDKIT_API_TOKEN_HERE") {
+    renderError("CloudKit API token not configured. See gear/index.html for setup instructions.");
+    return;
+  }
+
+  try {
+    // 1. Fetch the GearPage record
+    const pageData = await ckQuery("GearPage", [{
+      fieldName: "slug",
+      comparator: "EQUALS",
+      fieldValue: { value: slug, type: "STRING" }
+    }]);
+
+    const pageRecord = pageData.records?.[0];
+    if (!pageRecord) { renderError(`No gear page found for "${slug}".`); return; }
+
+    const ownerName   = pageRecord.fields.ownerName?.value   || "Sound Professional";
+    const isPublished = pageRecord.fields.isPublished?.value ?? 0;
+    const lastUpdated = pageRecord.fields.lastUpdated?.value;
+
+    if (!isPublished) { renderUnpublished(ownerName); return; }
+
+    // 2. Fetch all gear items for this slug
+    const itemsData = await ckQuery("PublicGearItem",
+      [{ fieldName: "pageSlug", comparator: "EQUALS", fieldValue: { value: slug, type: "STRING" } }],
+      [{ fieldName: "sortOrder", ascending: true }]
+    );
+
+    const items = itemsData.records || [];
+    if (items.length === 0) { renderEmpty(ownerName); return; }
+
+    renderGear(ownerName, lastUpdated, items);
+
+  } catch (err) {
+    console.error(err);
+    renderError("Failed to load gear data. Please try again later.");
+  }
+}
+
+main();
+</script>
+</body>
+</html>

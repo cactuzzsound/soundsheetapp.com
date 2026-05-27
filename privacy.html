@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Privacy Policy — SoundSheet</title>
+<meta name="description" content="SoundSheet privacy policy — how your data is handled."/>
+<meta name="theme-color" content="#1A1814"/>
+<link rel="icon" type="image/png" href="assets/app-icon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --cream: #F7F2EC; --white: #FDFAF7; --dark: #1A1814; --ink: #1C1209;
+  --brown: #6B5645; --muted: #9E8878;
+  --grad: linear-gradient(90deg, #8BAEC6 0%, #A4A9B6 35%, #C9887B 68%, #D4A252 100%);
+  --nu: 'Nunito', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--nu); background: var(--cream); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+header {
+  background: rgba(26,24,20,.95); backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(247,242,236,.08);
+  height: 56px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 clamp(20px,5vw,64px);
+  position: sticky; top: 0; z-index: 10;
+}
+.header-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.header-logo img { width: 24px; height: 24px; }
+.header-logo span { font-family: var(--nu); font-size: 15px; font-weight: 700; color: #F7F2EC; }
+.header-back { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: rgba(247,242,236,.45); text-decoration: none; transition: color .2s; }
+.header-back:hover { color: #F7F2EC; }
+
+.page { max-width: 720px; margin: 0 auto; padding: clamp(48px,8vw,96px) clamp(20px,5vw,48px) 96px; }
+
+.overline { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+h1 { font-family: var(--nu); font-size: clamp(36px,6vw,56px); font-weight: 800; letter-spacing: -.025em; line-height: 1.05; color: var(--ink); margin-bottom: 10px; }
+.updated { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; margin-bottom: 36px; }
+.grad-line { height: 1.5px; background: var(--grad); border-radius: 2px; max-width: 160px; margin-bottom: 52px; }
+
+.toc { background: var(--white); border: 1px solid rgba(28,18,9,.07); border-radius: 16px; padding: 22px 24px; margin-bottom: 52px; }
+.toc-title { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.toc ol { list-style: none; display: flex; flex-direction: column; gap: 8px; counter-reset: toc; }
+.toc li { counter-increment: toc; display: flex; align-items: center; gap: 10px; }
+.toc li::before { content: counter(toc); font-family: var(--mono); font-size: 11px; color: var(--muted); width: 18px; flex-shrink: 0; }
+.toc a { font-family: var(--nu); font-size: 14px; font-weight: 600; color: var(--brown); text-decoration: none; transition: color .2s; }
+.toc a:hover { color: var(--ink); }
+
+section { margin-bottom: 44px; scroll-margin-top: 72px; }
+section h2 { font-family: var(--nu); font-size: 21px; font-weight: 800; color: var(--ink); letter-spacing: -.01em; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(28,18,9,.07); }
+section p { font-size: 15px; font-weight: 400; color: var(--brown); line-height: 1.8; }
+section p + p { margin-top: 12px; }
+section ul, section ol { list-style: none; padding: 0; margin: 12px 0; display: flex; flex-direction: column; gap: 9px; }
+section li { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; color: var(--brown); line-height: 1.65; }
+section li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--grad); flex-shrink: 0; margin-top: 7px; display: block; }
+
+.highlight-box { background: var(--white); border: 1px solid rgba(28,18,9,.07); border-radius: 14px; padding: 20px 22px; margin: 16px 0; }
+.highlight-box p { font-size: 14px; line-height: 1.7; }
+
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 400; text-align: left; padding: 8px 12px; border-bottom: 1px solid rgba(28,18,9,.1); }
+td { padding: 10px 12px; color: var(--brown); line-height: 1.5; vertical-align: top; border-bottom: 1px solid rgba(28,18,9,.05); }
+tr:last-child td { border-bottom: none; }
+
+.contact-box { background: var(--dark); border-radius: 16px; padding: 28px; margin-top: 52px; }
+.contact-box h3 { font-family: var(--nu); font-size: 18px; font-weight: 800; color: #F7F2EC; margin-bottom: 10px; }
+.contact-box p { color: rgba(158,136,120,.8); font-size: 15px; line-height: 1.7; }
+.contact-box a { color: #F7F2EC; font-weight: 600; }
+
+footer { text-align: center; padding: 32px 20px; border-top: 1px solid rgba(28,18,9,.07); margin-top: 24px; }
+footer a { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="header-logo">
+    <img src="assets/logo.png" alt="SoundSheet"/>
+    <span>SoundSheet</span>
+  </a>
+  <a href="/" class="header-back">← Back to home</a>
+</header>
+
+<div class="page">
+  <div class="overline">Legal</div>
+  <h1>Privacy Policy</h1>
+  <div class="updated">Effective date: 27 May 2026 · Last updated: 27 May 2026</div>
+  <div class="grad-line"></div>
+
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#s1">Who we are</a></li>
+      <li><a href="#s2">Data we collect and why</a></li>
+      <li><a href="#s3">iCloud &amp; CloudKit</a></li>
+      <li><a href="#s4">Gear Page (Web Publish)</a></li>
+      <li><a href="#s5">Advertising</a></li>
+      <li><a href="#s6">In-App Purchases</a></li>
+      <li><a href="#s7">Analytics &amp; diagnostics</a></li>
+      <li><a href="#s8">Sharing with third parties</a></li>
+      <li><a href="#s9">Data retention &amp; deletion</a></li>
+      <li><a href="#s10">Your rights (GDPR / CCPA)</a></li>
+      <li><a href="#s11">Children</a></li>
+      <li><a href="#s12">Changes to this policy</a></li>
+      <li><a href="#s13">Contact</a></li>
+    </ol>
+  </div>
+
+  <!-- 1 -->
+  <section id="s1">
+    <h2>1. Who we are</h2>
+    <p><strong>SoundSheet</strong> is an iOS application developed and operated by <strong>cactuzz sound</strong> ("we", "us", "our"). This Privacy Policy applies to the SoundSheet mobile app (iOS / iPadOS) and the website soundsheetapp.com.</p>
+    <p>Contact: <a href="mailto:hello@cactuzzsound.com">hello@cactuzzsound.com</a></p>
+  </section>
+
+  <!-- 2 -->
+  <section id="s2">
+    <h2>2. Data we collect and why</h2>
+    <p>SoundSheet is a <strong>local-first</strong> app. All data you enter is stored on your device and, if iCloud is enabled, in your personal iCloud account. We do not operate servers that receive your personal data.</p>
+
+    <table>
+      <thead>
+        <tr><th>Data type</th><th>Purpose</th><th>Stored where</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Work days, sessions, production notes</td><td>Core app functionality</td><td>Device + iCloud (private)</td></tr>
+        <tr><td>Invoices, quotes, financial records</td><td>Finance module</td><td>Device + iCloud (private)</td></tr>
+        <tr><td>SFX recording notes</td><td>SFX Notes module</td><td>Device + iCloud (private)</td></tr>
+        <tr><td>Gear inventory, serial numbers, photos</td><td>Inventory module</td><td>Device + iCloud (private)</td></tr>
+        <tr><td>Templates and checklists</td><td>Day-sheet templates</td><td>Device + iCloud (private)</td></tr>
+        <tr><td>Your display name (optional)</td><td>Invoices, gear page</td><td>Device + iCloud (private)</td></tr>
+        <tr><td>App settings &amp; preferences</td><td>User experience</td><td>Device (UserDefaults)</td></tr>
+      </tbody>
+    </table>
+
+    <p>We do not collect names, email addresses, or any personally identifiable information beyond what you explicitly enter into the App.</p>
+  </section>
+
+  <!-- 3 -->
+  <section id="s3">
+    <h2>3. iCloud &amp; CloudKit</h2>
+    <p>SoundSheet uses <strong>Apple CloudKit</strong> to sync your private data across your Apple devices. This sync occurs between your devices via your personal iCloud account and is governed by <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple's Privacy Policy</a>. cactuzz sound has no access to your private CloudKit data.</p>
+    <p>iCloud sync is optional. If you are not signed in to iCloud or disable iCloud Drive for SoundSheet in iOS Settings, all data remains only on-device.</p>
+  </section>
+
+  <!-- 4 -->
+  <section id="s4">
+    <h2>4. Gear Page (Web Publish)</h2>
+    <p>The optional <strong>Gear Website</strong> subscription allows you to publish your gear inventory as a publicly accessible web page at <code>soundsheetapp.com/gear/your-slug</code>.</p>
+    <p>When you activate this feature and enable publishing, the following data is written to Apple's <strong>CloudKit public database</strong> — meaning it becomes publicly readable by anyone on the internet:</p>
+    <ul>
+      <li>Your display name (as entered in App Settings)</li>
+      <li>Gear item names, brands, categories, and quantities</li>
+      <li>Photos attached to gear items (if any)</li>
+      <li>A URL slug derived from your name</li>
+      <li>The timestamp of the last sync</li>
+    </ul>
+    <div class="highlight-box">
+      <p><strong>Important:</strong> Published gear page data is public. Do not include sensitive personal information (e.g. home address, private serial numbers you wish to keep confidential) in fields that are synced to the public database.</p>
+    </div>
+    <p>You can unpublish your gear page at any time from within the App. This marks your page as private and deletes all associated public records from CloudKit immediately.</p>
+    <p>If you cancel the Gear Website subscription, your page is automatically unpublished and all public records are removed.</p>
+  </section>
+
+  <!-- 5 -->
+  <section id="s5">
+    <h2>5. Advertising</h2>
+    <p>The free tier of SoundSheet displays banner advertisements provided by Apple's <strong>App Store Ad Network</strong>. These ads may be personalised based on your Apple Advertising preferences, which you can manage in <em>iOS Settings → Privacy &amp; Security → Apple Advertising</em>.</p>
+    <p>Purchasing the <strong>Remove Ads</strong> in-app purchase permanently disables all advertising within the App for the purchasing Apple ID.</p>
+    <p>We do not use any third-party advertising SDKs (e.g. Google AdMob, Meta Audience Network). No advertising identifiers (IDFA) are accessed by cactuzz sound.</p>
+  </section>
+
+  <!-- 6 -->
+  <section id="s6">
+    <h2>6. In-App Purchases</h2>
+    <p>SoundSheet offers in-app purchases (Remove Ads — one-time; Gear Website — monthly subscription) processed exclusively through <strong>Apple's App Store / StoreKit</strong>. cactuzz sound never receives, stores, or processes your payment card details. All billing is handled by Apple and subject to Apple's Terms of Sale.</p>
+    <p>Purchase receipts and entitlement checks are verified locally on-device via StoreKit 2. No receipt data is transmitted to cactuzz sound servers.</p>
+  </section>
+
+  <!-- 7 -->
+  <section id="s7">
+    <h2>7. Analytics &amp; diagnostics</h2>
+    <p>SoundSheet does <strong>not</strong> integrate any third-party analytics SDKs (e.g. Firebase, Mixpanel, Amplitude). No behavioural analytics or usage telemetry is collected by cactuzz sound.</p>
+    <p>If you have opted in to <em>Share iPhone &amp; Watch Analytics</em> in iOS Settings, Apple may share anonymised, aggregated crash reports and usage statistics with us through App Store Connect. This data contains no personally identifiable information and is controlled by Apple's privacy framework.</p>
+  </section>
+
+  <!-- 8 -->
+  <section id="s8">
+    <h2>8. Sharing with third parties</h2>
+    <p>We do <strong>not</strong> sell, rent, or share your personal data with third parties for commercial purposes. Data is shared only in the following limited circumstances:</p>
+    <ul>
+      <li><strong>Apple / iCloud:</strong> As described in sections 3–6 above, necessary to provide core app functionality.</li>
+      <li><strong>Legal obligation:</strong> If required by applicable law, court order, or governmental authority.</li>
+    </ul>
+    <p>There are no data brokers, marketing partners, or analytics vendors who receive your data.</p>
+  </section>
+
+  <!-- 9 -->
+  <section id="s9">
+    <h2>9. Data retention &amp; deletion</h2>
+    <p>Your data is retained for as long as you use the App or until you delete it. You are in full control:</p>
+    <ul>
+      <li>Delete individual records at any time from within the App</li>
+      <li>Unpublish your gear page to remove all public CloudKit records immediately</li>
+      <li>Delete the App from your device — local data (UserDefaults, Core Data) is erased by iOS</li>
+      <li>Manage or delete iCloud data at <a href="https://www.icloud.com" target="_blank" rel="noopener">icloud.com</a> or in iOS Settings → [your name] → iCloud → Manage Account Storage</li>
+    </ul>
+    <p>To request deletion of any data we may hold, contact us at <a href="mailto:hello@cactuzzsound.com">hello@cactuzzsound.com</a> and we will respond within 30 days.</p>
+  </section>
+
+  <!-- 10 -->
+  <section id="s10">
+    <h2>10. Your rights (GDPR / CCPA)</h2>
+    <p>Depending on your location, you may have rights including:</p>
+    <ul>
+      <li><strong>Access:</strong> Request a copy of personal data we hold about you</li>
+      <li><strong>Correction:</strong> Request correction of inaccurate data</li>
+      <li><strong>Deletion:</strong> Request erasure of your personal data ("right to be forgotten")</li>
+      <li><strong>Portability:</strong> Receive your data in a structured, machine-readable format</li>
+      <li><strong>Objection:</strong> Object to processing of your personal data</li>
+      <li><strong>Restriction:</strong> Request that we restrict processing of your data</li>
+    </ul>
+    <p>Since all data is stored in your iCloud account, most of these rights are exercisable directly through your iOS device and icloud.com. For any data held by cactuzz sound, contact <a href="mailto:hello@cactuzzsound.com">hello@cactuzzsound.com</a>.</p>
+    <p><strong>California residents (CCPA):</strong> We do not sell personal information. You have the right to know what data is collected and to request deletion. Contact us at the email above to exercise these rights. We will not discriminate against you for exercising your privacy rights.</p>
+  </section>
+
+  <!-- 11 -->
+  <section id="s11">
+    <h2>11. Children</h2>
+    <p>SoundSheet is designed for working audio professionals and is not directed at children under the age of 13 (or the applicable age of digital consent in your jurisdiction). We do not knowingly collect personal data from children. If you believe a child has provided us with personal data, please contact us and we will delete it promptly.</p>
+  </section>
+
+  <!-- 12 -->
+  <section id="s12">
+    <h2>12. Changes to this policy</h2>
+    <p>We may update this Privacy Policy periodically. When we do, we will revise the "Last updated" date at the top of this page. For material changes that affect how we handle your data, we will provide notice within the App.</p>
+    <p>The current version of this policy is always available at <strong>soundsheetapp.com/privacy</strong>. Continued use of the App after changes constitutes your acceptance of the updated policy.</p>
+  </section>
+
+  <!-- 13 -->
+  <section id="s13">
+    <h2>13. Contact</h2>
+    <div class="contact-box">
+      <h3>Get in touch</h3>
+      <p>For privacy-related questions, data deletion requests, or any other enquiries, contact us at:<br/><br/>
+      <a href="mailto:hello@cactuzzsound.com">hello@cactuzzsound.com</a><br/><br/>
+      We aim to respond to all requests within <strong>30 days</strong>.</p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <a href="/">← soundsheetapp.com</a>
+</footer>
+
+</body>
+</html>
