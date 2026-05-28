@@ -1,3 +1,6 @@
-# Cloudflare Pages routing
-# Serves gear/index.html for any /gear/* URL without a redirect (200 = rewrite, not redirect)
+# Static demo page — must come BEFORE the wildcard rule
+/gear/example  /gear/example/index.html  200
+
+# Cloudflare Workers routing
+# Serves gear/index.html for any /gear/:slug URL (CloudKit live viewer)
 /gear/:slug  /gear/index.html  200
