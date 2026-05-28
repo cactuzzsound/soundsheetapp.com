@@ -233,7 +233,7 @@ nav.scrolled {
 }
 .feature-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 18px; max-width: 1200px; margin: 0 auto;
 }
 @media (max-width: 960px) {
@@ -401,6 +401,28 @@ nav.scrolled {
   font-family: var(--mono); font-size: 10px;
   letter-spacing: .06em; color: rgba(255,255,255,.46);
 }
+
+/* ── SCOUT CARD ── */
+.risk-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 100px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase;
+}
+.risk-low    { background: rgba(74,222,128,.15);  color: #4ade80; }
+.risk-medium { background: rgba(251,191,36,.15);  color: #fbbf24; }
+.risk-high   { background: rgba(251,146,60,.15);  color: #fb923c; }
+.scout-row-meta {
+  font-size: 12px; color: rgba(255,255,255,.42);
+  display: flex; align-items: center; gap: 6px; margin-top: 3px;
+}
+.scout-check-row {
+  display: flex; align-items: center; gap: 8px;
+  margin: 0 10px 6px; padding: 9px 14px;
+  background: #1c1c1e; border-radius: 10px;
+  font-family: var(--nu); font-size: 13px; font-weight: 600; color: rgba(255,255,255,.78);
+}
+.scout-check-row::before { content: "✓"; color: #4ade80; font-size: 11px; font-weight: 700; }
+.scout-check-row.pending { color: rgba(255,255,255,.28); }
+.scout-check-row.pending::before { content: "○"; color: rgba(255,255,255,.22); }
 
 /* ── GEAR PAGE FEATURE ── */
 .gear-section {
@@ -775,14 +797,14 @@ footer {
     <div class="feature-card fade-up" style="transition-delay:.05s">
       <div class="feature-card-dot" style="background:rgba(139,174,198,.12)">📋</div>
       <h3>Days</h3>
-      <p>Track every shoot day, set session, or scout run with full production details. Your complete work history, always at hand.</p>
+      <p>Set, SFX, Scout, Prep, Rental — 5 day types with scenes, checklists, photos, and voice notes. Your full production history.</p>
       <div class="feature-card-bar" style="background:linear-gradient(90deg,#8BAEC6,transparent)"></div>
     </div>
 
     <div class="feature-card fade-up" style="transition-delay:.12s">
       <div class="feature-card-dot" style="background:rgba(201,136,123,.12)">💰</div>
       <h3>Finance</h3>
-      <p>Generate invoices and quotes in seconds. Track earnings, payment status, and export CSV for your accountant.</p>
+      <p>Invoices, earnings forecast, and weekly timesheet. Track paid, pending, and overdue — export CSV for your accountant.</p>
       <div class="feature-card-bar" style="background:linear-gradient(90deg,#C9887B,transparent)"></div>
     </div>
 
@@ -796,11 +818,18 @@ footer {
     <div class="feature-card fade-up" style="transition-delay:.26s">
       <div class="feature-card-dot" style="background:rgba(158,136,120,.12)">🎚</div>
       <h3>Inventory</h3>
-      <p>Your full kit with brands, serial numbers, photos, and condition. Includes insurance PDF export for every item.</p>
+      <p>Log your kit with photos, serial numbers, and condition notes. Export a full insurance PDF report — one tap.</p>
       <div class="feature-card-bar" style="background:linear-gradient(90deg,#9E8878,transparent)"></div>
     </div>
 
     <div class="feature-card fade-up" style="transition-delay:.33s">
+      <div class="feature-card-dot" style="background:rgba(201,136,123,.12)">🎬</div>
+      <h3>Scenes</h3>
+      <p>Track shooting scenes per day — scene numbers, status, and notes. Import your scene breakdown directly from CSV.</p>
+      <div class="feature-card-bar" style="background:linear-gradient(90deg,#C9887B,transparent)"></div>
+    </div>
+
+    <div class="feature-card fade-up" style="transition-delay:.40s">
       <div class="feature-card-dot" style="background:rgba(139,174,198,.12)">📄</div>
       <h3>Templates</h3>
       <p>Pre-built day sheet templates for any job type. Start your session with the right checklist, ready in seconds.</p>
@@ -923,6 +952,50 @@ footer {
 </section>
 
 <div class="sep sep-dark"></div>
+
+<!-- ────────── SCOUT & PREP SPOTLIGHT ────────── -->
+<section class="spot-wrap-dark" id="scout">
+  <div class="spot">
+    <div class="spot-text">
+      <span class="label fade-up">Scout &amp; Prep</span>
+      <h2 class="fade-up" style="transition-delay:.1s">Before the first<br/>slate drops.</h2>
+      <p class="fade-up" style="transition-delay:.2s">
+        Scout locations, log noise risks, and attach photos — then build your Prep Day checklist so you arrive on set ready. Everything documented, nothing forgotten.
+      </p>
+      <ul class="fade-up" style="transition-delay:.3s">
+        <li><span class="spot-check"></span>Log location notes with noise risk: Low, Medium, High, Critical</li>
+        <li><span class="spot-check"></span>Attach photos directly from the scout to each note</li>
+        <li><span class="spot-check"></span>Build Prep Day checklists with gear and task items</li>
+        <li><span class="spot-check"></span>Save templates and reuse them across similar jobs</li>
+      </ul>
+    </div>
+    <div class="spot-visual fade-up" style="transition-delay:.15s">
+      <div class="sfx-card">
+        <div class="sfx-header">📍 Scout — St. James Church</div>
+        <div class="sfx-section">Location Notes</div>
+        <div class="sfx-row">
+          <div class="sfx-row-name">Main Nave</div>
+          <div class="scout-row-meta"><span class="risk-badge risk-low">Low risk</span> Interior</div>
+        </div>
+        <div class="sfx-row" style="opacity:.7">
+          <div class="sfx-row-name">Bell Tower</div>
+          <div class="scout-row-meta"><span class="risk-badge risk-medium">Medium</span> Wind</div>
+        </div>
+        <div class="sfx-row" style="opacity:.45">
+          <div class="sfx-row-name">Courtyard</div>
+          <div class="scout-row-meta"><span class="risk-badge risk-high">High risk</span> Road traffic</div>
+        </div>
+        <div class="sfx-section" style="margin-top:4px">Prep Checklist</div>
+        <div class="scout-check-row">4× Lectrosonics SSM</div>
+        <div class="scout-check-row">Boom + Rycote mount</div>
+        <div class="scout-check-row pending">Backup lavs</div>
+        <div style="height:8px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
 
 <!-- ────────── GEAR PAGE FEATURE ────────── -->
 <section class="gear-section" id="gear">
