@@ -18,7 +18,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CONTAINER = "iCloud.cactuzzsound.SoundSheet";
-const ENV       = "production";
+// Defaults to production. Set the CK_ENV var to "development" to read the
+// CloudKit development database (e.g. when testing with an Xcode build, whose
+// data goes to development). Remove/blank it for production releases.
+const DEFAULT_ENV = "production";
 
 export default {
   async fetch(request, env) {
@@ -90,7 +93,8 @@ async function handleGearApi(url, env) {
 
 // ── CloudKit signed query ─────────────────────────────────────────────────────
 async function ckQuery(env, recordType, filterBy, sortBy) {
-  const subpath = `/database/1/${CONTAINER}/${ENV}/public/records/query`;
+  const ckEnv = env.CK_ENV || DEFAULT_ENV;
+  const subpath = `/database/1/${CONTAINER}/${ckEnv}/public/records/query`;
   const query = { recordType, filterBy };
   if (sortBy) query.sortBy = sortBy;
   const body = JSON.stringify({ query });
