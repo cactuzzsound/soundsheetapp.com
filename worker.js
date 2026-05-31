@@ -27,6 +27,14 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // ── Block internal/dev files that may have ended up in the asset bundle ──
+    if (/^\/(\.git|\.wrangler|node_modules)(\/|$)/.test(url.pathname)
+        || url.pathname.endsWith("/worker.js")
+        || url.pathname.endsWith("/wrangler.jsonc")
+        || url.pathname.endsWith(".pem")) {
+      return new Response("Not found", { status: 404 });
+    }
+
     // ── API: gear data ──────────────────────────────────────────────────────
     if (url.pathname.startsWith("/api/gear/")) {
       return handleGearApi(url, env);
