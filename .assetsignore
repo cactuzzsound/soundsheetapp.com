@@ -1,0 +1,17 @@
+.git
+.git/**
+.wrangler
+.wrangler/**
+node_modules
+node_modules/**
+*.pem
+*.key
+worker.js
+worker.js.map
+wrangler.jsonc
+wrangler.toml
+package.json
+package-lock.json
+.gitignore
+.assetsignore
+.DS_Store
