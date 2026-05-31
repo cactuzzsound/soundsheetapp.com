@@ -200,22 +200,10 @@ header {
 
 <script>
 // ─────────────────────────────────────────────────────────────────────────────
-// CloudKit public database reader
+// Gear page viewer. Data comes from our own /api/gear/:slug endpoint (a
+// Cloudflare Worker that talks to CloudKit with a Server-to-Server key) — no
+// CloudKit credentials live in the browser.
 // ─────────────────────────────────────────────────────────────────────────────
-//
-// Setup steps (one-time, in Apple Developer Portal):
-//   1. developer.apple.com → Certificates, IDs & Profiles → (nothing needed here)
-//   2. Go to: icloud.developer.apple.com/dashboard
-//   3. Select container: iCloud.cactuzzsound.SoundSheet
-//   4. Environment: Production
-//   5. API Access → Tokens → "+" → create a new token
-//      (no special permissions needed for reading public DB)
-//   6. Copy the token and paste it below as CLOUDKIT_TOKEN
-//
-const CLOUDKIT_TOKEN  = "011470c9d081a0f346393cb0097575e0ca1a15829ab1460b3d71cfd756055bf4";
-const CONTAINER       = "iCloud.cactuzzsound.SoundSheet";
-const ENV             = "production";
-const CK_BASE         = `https://api.apple-cloudkit.com/database/1/${CONTAINER}/${ENV}/public`;
 
 // ── Emoji per category ──
 const CATEGORY_ICONS = {
@@ -234,19 +222,6 @@ function slugFromPath() {
   const parts = window.location.pathname.split('/').filter(Boolean);
   // parts = ["gear", "jan-kowalski-abc123"]
   return parts.length >= 2 ? parts[parts.length - 1] : null;
-}
-
-// ── CloudKit query helper ──
-async function ckQuery(recordType, filters, sortBy) {
-  const body = { query: { recordType, filterBy: filters } };
-  if (sortBy) body.query.sortBy = sortBy;
-  const res = await fetch(`${CK_BASE}/records/query?ckAPIToken=${CLOUDKIT_TOKEN}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) throw new Error(`CloudKit error: ${res.status}`);
-  return res.json();
 }
 
 // ── Render helpers ──
@@ -287,7 +262,7 @@ function renderEmpty(ownerName) {
 function groupByCategory(items) {
   const groups = {};
   for (const item of items) {
-    const cat = item.fields.category?.value || "Other";
+    const cat = item.category || "Other";
     if (!groups[cat]) groups[cat] = [];
     groups[cat].push(item);
   }
@@ -295,8 +270,10 @@ function groupByCategory(items) {
 }
 
 function renderGear(ownerName, lastUpdated, items) {
-  const dateStr = lastUpdated
-    ? new Date(lastUpdated * 1000).toLocaleDateString("en-US", { year:"numeric", month:"long", day:"numeric" })
+  // CloudKit DATETIME comes back as ms since epoch; tolerate seconds too.
+  const ms = lastUpdated ? (Number(lastUpdated) < 1e12 ? Number(lastUpdated) * 1000 : Number(lastUpdated)) : 0;
+  const dateStr = ms
+    ? new Date(ms).toLocaleDateString("en-US", { year:"numeric", month:"long", day:"numeric" })
     : "";
 
   const groups = groupByCategory(items);
@@ -307,10 +284,10 @@ function renderGear(ownerName, lastUpdated, items) {
     const icon = iconFor(cat);
     categoriesHTML += `<div class="category-title">${icon} ${cat}</div>`;
     for (const item of catItems) {
-      const name     = item.fields.name?.value     || "Unknown item";
-      const brand    = item.fields.brand?.value    || "";
-      const qty      = item.fields.quantityOwned?.value ?? 1;
-      const photoURL = item.fields.photoAsset?.value?.downloadURL;
+      const name     = item.name     || "Unknown item";
+      const brand    = item.brand    || "";
+      const qty      = item.quantityOwned ?? 1;
+      const photoURL = item.photoURL;
 
       const photoEl = photoURL
         ? `<img class="gear-photo" src="${photoURL}" alt="${name}" loading="lazy"/>`
@@ -384,39 +361,19 @@ async function main() {
     return;
   }
 
-  if (CLOUDKIT_TOKEN === "011470c9d081a0f346393cb0097575e0ca1a15829ab1460b3d71cfd756055bf4") {
-    renderError("CloudKit API token not configured. See gear/index.html for setup instructions.");
-    return;
-  }
-
   try {
-    // 1. Fetch the GearPage record
-    const pageData = await ckQuery("GearPage", [{
-      fieldName: "slug",
-      comparator: "EQUALS",
-      fieldValue: { value: slug, type: "STRING" }
-    }]);
+    const res = await fetch(`/api/gear/${encodeURIComponent(slug)}`);
+    if (res.status === 404) { renderError(`No gear page found for "${slug}".`); return; }
+    if (!res.ok) { renderError("Failed to load gear data. Please try again later."); return; }
 
-    const pageRecord = pageData.records?.[0];
-    if (!pageRecord) { renderError(`No gear page found for "${slug}".`); return; }
+    const data = await res.json();
+    if (!data.found)          { renderError(`No gear page found for "${slug}".`); return; }
+    if (!data.isPublished)    { renderUnpublished(data.ownerName); return; }
 
-    const ownerName   = pageRecord.fields.ownerName?.value   || "Sound Professional";
-    const isPublished = pageRecord.fields.isPublished?.value ?? 0;
-    const lastUpdated = pageRecord.fields.lastUpdated?.value;
+    const items = data.items || [];
+    if (items.length === 0)   { renderEmpty(data.ownerName); return; }
 
-    if (!isPublished) { renderUnpublished(ownerName); return; }
-
-    // 2. Fetch all gear items for this slug
-    const itemsData = await ckQuery("PublicGearItem",
-      [{ fieldName: "pageSlug", comparator: "EQUALS", fieldValue: { value: slug, type: "STRING" } }],
-      [{ fieldName: "sortOrder", ascending: true }]
-    );
-
-    const items = itemsData.records || [];
-    if (items.length === 0) { renderEmpty(ownerName); return; }
-
-    renderGear(ownerName, lastUpdated, items);
-
+    renderGear(data.ownerName, data.lastUpdated, items);
   } catch (err) {
     console.error(err);
     renderError("Failed to load gear data. Please try again later.");
