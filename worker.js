@@ -30,8 +30,11 @@ export default {
     }
 
     // ── Gear viewer page (any /gear/<slug> except the static example) ────────
+    // Serve the viewer's index.html while keeping the browser URL on the slug.
+    // We fetch "/gear/" (not "/gear/index.html") because Cloudflare 307-redirects
+    // *.../index.html to the directory, which would strip the slug.
     if (/^\/gear\/[^/]+\/?$/.test(url.pathname) && !url.pathname.startsWith("/gear/example")) {
-      return env.ASSETS.fetch(new Request(new URL("/gear/index.html", url), request));
+      return env.ASSETS.fetch(new Request(new URL("/gear/", url), request));
     }
 
     // ── Everything else: static assets ───────────────────────────────────────
