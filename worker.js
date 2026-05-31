@@ -102,6 +102,11 @@ async function handleGearApi(url, env) {
 // ── CloudKit signed query ─────────────────────────────────────────────────────
 async function ckQuery(env, recordType, filterBy, sortBy) {
   const ckEnv = env.CK_ENV || DEFAULT_ENV;
+  // Server-to-Server Key IDs are per-environment. Use the dev key ID when
+  // querying development (if provided), otherwise the production one.
+  const keyID = (ckEnv === "development" && env.CK_KEY_ID_DEV)
+    ? env.CK_KEY_ID_DEV
+    : env.CK_KEY_ID;
   const subpath = `/database/1/${CONTAINER}/${ckEnv}/public/records/query`;
   const query = { recordType, filterBy };
   if (sortBy) query.sortBy = sortBy;
@@ -116,7 +121,7 @@ async function ckQuery(env, recordType, filterBy, sortBy) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-Apple-CloudKit-Request-KeyID": env.CK_KEY_ID,
+      "X-Apple-CloudKit-Request-KeyID": keyID,
       "X-Apple-CloudKit-Request-ISO8601Date": date,
       "X-Apple-CloudKit-Request-SignatureV1": signature,
     },
