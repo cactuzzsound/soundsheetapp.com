@@ -110,7 +110,9 @@ header {
   object-fit: cover; flex-shrink: 0;
   background: rgba(247,242,236,.06);
   border: 1px solid rgba(247,242,236,.08);
+  cursor: zoom-in; transition: transform .15s;
 }
+.gear-photo:hover { transform: scale(1.05); }
 .gear-photo-placeholder {
   width: 52px; height: 52px; border-radius: 10px; flex-shrink: 0;
   background: rgba(247,242,236,.05);
@@ -169,6 +171,35 @@ header {
 }
 .page-footer a:hover { color: var(--muted); }
 .page-footer img { width: 16px; height: 16px; opacity: .4; }
+
+/* Lightbox — every photo enlarges into the same fixed-size frame */
+.lightbox {
+  position: fixed; inset: 0; z-index: 1000;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.85); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: zoom-out; padding: 24px;
+  opacity: 0; transition: opacity .2s;
+}
+.lightbox.open { display: flex; opacity: 1; }
+.lightbox-frame {
+  width: min(86vw, 560px); height: min(86vw, 560px);
+  display: flex; align-items: center; justify-content: center;
+}
+.lightbox-frame img {
+  max-width: 100%; max-height: 100%;
+  width: auto; height: auto;
+  object-fit: contain; border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+.lightbox-close {
+  position: absolute; top: 20px; right: 24px;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(247,242,236,.1); border: none;
+  color: var(--cream); font-size: 22px; line-height: 1;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.lightbox-close:hover { background: rgba(247,242,236,.2); }
 </style>
 </head>
 <body>
@@ -189,6 +220,12 @@ header {
     <div class="spinner"></div>
     <div class="state-sub">Loading gear list…</div>
   </div>
+</div>
+
+<!-- Lightbox overlay (shared by all photos) -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+  <div class="lightbox-frame"><img id="lightbox-img" src="" alt=""/></div>
 </div>
 
 <div class="page-footer">
@@ -381,6 +418,40 @@ async function main() {
 }
 
 main();
+
+// ── Lightbox: click any gear photo to enlarge it into the shared frame ──
+(function setupLightbox() {
+  const box   = document.getElementById("lightbox");
+  const img   = document.getElementById("lightbox-img");
+  const close = document.getElementById("lightbox-close");
+
+  function open(src, alt) {
+    img.src = src;
+    img.alt = alt || "";
+    box.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+  function hide() {
+    box.classList.remove("open");
+    document.body.style.overflow = "";
+    img.src = "";
+  }
+
+  // Event delegation — gear items are rendered dynamically into #app.
+  document.getElementById("app").addEventListener("click", (e) => {
+    const photo = e.target.closest(".gear-photo");
+    if (photo && photo.src) open(photo.src, photo.alt);
+  });
+
+  box.addEventListener("click", (e) => {
+    // Close on backdrop or close-button click (but not when clicking the image).
+    if (e.target !== img) hide();
+  });
+  close.addEventListener("click", hide);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && box.classList.contains("open")) hide();
+  });
+})();
 </script>
 </body>
 </html>
