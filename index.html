@@ -761,11 +761,23 @@ footer {
 .bgp-3 { width: 55px; top: 72%; animation-duration: 19s; animation-delay: -7s; }
 .bgp-4 { width: 70px; top: 26%; animation-duration: 36s; animation-delay: -18s; }
 .bgp-5 { width: 50px; top: 60%; animation-duration: 22s; animation-delay: -3s; }
+.bg-widget {
+  position: absolute;
+  background: rgba(20,18,14,.72);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(247,242,236,.1);
+  border-radius: 14px; padding: 10px 14px;
+  white-space: nowrap; pointer-events: none;
+  animation: bg-drift linear infinite;
+}
+.bwg-1 { top: 18%; animation-duration: 29s; animation-delay: -4s; }
+.bwg-2 { top: 55%; animation-duration: 38s; animation-delay: -16s; }
+.bwg-3 { top: 80%; animation-duration: 25s; animation-delay: -22s; }
 @keyframes bg-drift {
-  0%   { left: -120px; opacity: 0; transform: rotate(-6deg) translateY(0); }
+  0%   { left: -220px; opacity: 0; transform: rotate(-6deg) translateY(0); }
   6%   { opacity: 1; }
   94%  { opacity: 1; }
-  100% { left: calc(100% + 120px); opacity: 0; transform: rotate(5deg) translateY(-28px); }
+  100% { left: calc(100% + 220px); opacity: 0; transform: rotate(5deg) translateY(-28px); }
 }
 @media (max-width:768px) { .hero-bg-phones { display: none; } }
 
@@ -862,6 +874,8 @@ footer {
 .iphone-float { animation: phone-float 6s ease-in-out infinite; }
 
 /* ────────── HERO SHOWCASE ────────── */
+.hero-icon, .hero-overline, .hero h1, .hero-desc,
+.hero-actions, .hero-pills { position: relative; z-index: 2; }
 .hero-showcase {
   position: relative; margin-top: 56px;
   display: flex; justify-content: center; z-index: 2;
@@ -964,11 +978,28 @@ footer {
 <!-- ────────── HERO ────────── -->
 <section class="hero">
   <div class="hero-bg-phones">
+    <!-- mini phones -->
     <div class="bg-phone bgp-1"><div class="bg-phone-screen"><img src="assets/screens/screen-finance.jpg" alt=""/></div></div>
     <div class="bg-phone bgp-2"><div class="bg-phone-screen"><img src="assets/screens/screen-sfx.jpg" alt=""/></div></div>
     <div class="bg-phone bgp-3"><div class="bg-phone-screen"><img src="assets/screens/screen-checklist.jpg" alt=""/></div></div>
     <div class="bg-phone bgp-4"><div class="bg-phone-screen"><img src="assets/screens/screen-scenes.jpg" alt=""/></div></div>
     <div class="bg-phone bgp-5"><div class="bg-phone-screen"><img src="assets/screens/screen-inventory.jpg" alt=""/></div></div>
+    <!-- floating widgets -->
+    <div class="bg-widget bwg-1">
+      <div class="widget-label">Total earned</div>
+      <div class="widget-val">26 050 €</div>
+      <div class="widget-sub">46 paid days · 2026</div>
+    </div>
+    <div class="bg-widget bwg-2">
+      <div class="widget-label">Today</div>
+      <div class="widget-val">Post Sync Session</div>
+      <div class="widget-sub">27 Aug · 10:00 – 17:00 · 700 €</div>
+    </div>
+    <div class="bg-widget bwg-3">
+      <div class="widget-label">iCloud</div>
+      <div class="widget-val">☁ Syncing</div>
+      <div class="widget-sub">All devices up to date</div>
+    </div>
   </div>
   <div class="hero-blob hero-blob-1"></div>
   <div class="hero-blob hero-blob-2"></div>
@@ -1024,21 +1055,6 @@ footer {
 
   <div class="hero-showcase fade-up" style="transition-delay:.82s">
     <div class="hero-phone-wrap">
-      <div class="hero-widget hw-earn">
-        <div class="widget-label">Total earned</div>
-        <div class="widget-val">26 050 €</div>
-        <div class="widget-sub">46 paid days · 2026</div>
-      </div>
-      <div class="hero-widget hw-days">
-        <div class="widget-label">Today</div>
-        <div class="widget-val">Post Sync Session</div>
-        <div class="widget-sub">27 Aug · 10:00 – 17:00 · 700 €</div>
-      </div>
-      <div class="hero-widget hw-sync">
-        <div class="widget-label">iCloud</div>
-        <div class="widget-val">☁ Syncing</div>
-        <div class="widget-sub">All devices up to date</div>
-      </div>
       <div class="iphone iphone-float hero-slideshow">
         <div class="iphone-screen">
           <img src="assets/screens/screen-days.jpg"      alt="Shooting Days" class="active"/>
@@ -1432,29 +1448,28 @@ document.querySelectorAll('.hero .fade-up').forEach((el, i) => {
   }, 3200);
 })();
 
-// ── Screenshot carousel — JS scroll-driven ──
-(function () {
+// ── Screenshot carousel — JS scroll-driven, seamless ──
+window.addEventListener('load', function () {
   const track = document.querySelector('.screens-track');
   if (!track) return;
   track.style.animation = 'none';
-  const SPEED = 90; // px per second (auto)
-  const SCROLL_FACTOR = 0.35; // extra px per px of page scroll
+  const SPEED = 90;         // px/s auto-scroll
+  const SCROLL_K = 0.35;    // extra px per page-scroll px
   let baseX = 0;
   let lastTime = performance.now();
+  const halfW = track.scrollWidth / 2; // images are loaded at this point
 
   function tick(now) {
     const dt = (now - lastTime) / 1000;
     lastTime = now;
     baseX += SPEED * dt;
-    const halfW = track.scrollWidth / 2;
     if (baseX >= halfW) baseX -= halfW;
-    const scrollBonus = window.scrollY * SCROLL_FACTOR;
-    const totalX = (baseX + scrollBonus) % halfW;
-    track.style.transform = `translateX(${-totalX}px)`;
+    const total = (baseX + window.scrollY * SCROLL_K) % halfW;
+    track.style.transform = `translateX(${-total}px)`;
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
-})();
+});
 </script>
 </body>
 </html>
