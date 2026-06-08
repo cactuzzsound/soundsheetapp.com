@@ -949,13 +949,14 @@ footer {
 .screens-track-wrap::after  { right:0; background: linear-gradient(to left,  var(--dark), transparent); }
 .screens-track {
   display: flex; gap: 20px; padding: 12px 20px;
-  animation: ss-scroll 55s linear infinite;
+  animation: ss-scroll 22s linear infinite;
   width: max-content;
+  will-change: transform;
 }
-.screens-track:hover { animation-play-state: paused; cursor: default; }
+.screens-track:hover { animation-play-state: paused; }
 @keyframes ss-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 .ss-item { flex-shrink: 0; }
 .ss-item .iphone-screen { width: 158px; }
@@ -1496,37 +1497,8 @@ document.querySelectorAll('.hero .fade-up').forEach((el, i) => {
   }, 3200);
 })();
 
-// ── Screenshot carousel — seamless, scroll-boosted ──
-window.addEventListener('load', function () {
-  const track = document.querySelector('.screens-track');
-  if (!track) return;
-  track.style.animation = 'none';
-  track.getBoundingClientRect(); // force layout
-  const halfW = track.scrollWidth / 2;
-
-  const SPEED = 80;       // px/s auto-scroll
-  const SCROLL_K = 0.45;  // extra px added per scrolled px
-  let pos = 0;
-  let lastScrollY = window.scrollY;
-  let lastTime = performance.now();
-
-  // Scroll adds directly to pos (stays inside [0, halfW))
-  window.addEventListener('scroll', function () {
-    const delta = window.scrollY - lastScrollY;
-    lastScrollY = window.scrollY;
-    pos = (pos + delta * SCROLL_K + halfW) % halfW;
-  }, { passive: true });
-
-  function tick(now) {
-    const dt = (now - lastTime) / 1000;
-    lastTime = now;
-    pos += SPEED * dt;
-    if (pos >= halfW) pos -= halfW;
-    track.style.transform = `translateX(${-pos}px)`;
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-});
+// ── Screenshot carousel — CSS-native seamless loop ──
+// CSS handles -50% translateX perfectly (no floating point drift)
 </script>
 </body>
 </html>
