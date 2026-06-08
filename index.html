@@ -715,6 +715,143 @@ footer {
   footer { flex-direction: column; align-items: flex-start; gap: 16px; }
   .footer-links { gap: 16px; }
 }
+
+/* ────────── ANIMATED BLOBS ────────── */
+@keyframes blob-drift {
+  0%,100% { transform: translate(0,0) scale(1); }
+  25%      { transform: translate(40px,-30px) scale(1.08); }
+  50%      { transform: translate(-20px,22px) scale(0.94); }
+  75%      { transform: translate(28px,32px) scale(1.05); }
+}
+.hero-blob {
+  position: absolute; border-radius: 50%;
+  filter: blur(90px); opacity: .55; pointer-events: none; z-index: 0;
+}
+.hero-blob-1 {
+  width: 540px; height: 540px;
+  background: radial-gradient(circle, rgba(139,174,198,.65), transparent 70%);
+  top: -160px; left: -100px;
+  animation: blob-drift 15s ease-in-out infinite;
+}
+.hero-blob-2 {
+  width: 440px; height: 440px;
+  background: radial-gradient(circle, rgba(201,136,123,.55), transparent 70%);
+  top: 80px; right: -130px;
+  animation: blob-drift 12s ease-in-out infinite reverse;
+  animation-delay: -5s;
+}
+.hero-blob-3 {
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(212,162,82,.48), transparent 70%);
+  bottom: 60px; left: 36%;
+  animation: blob-drift 18s ease-in-out infinite;
+  animation-delay: -9s;
+}
+
+/* ────────── IPHONE FRAME ────────── */
+.iphone {
+  position: relative; display: inline-block;
+  background: linear-gradient(160deg, #2c2c2c 0%, #181818 100%);
+  border-radius: 44px; padding: 10px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.12),
+    0 0 0 2px rgba(0,0,0,.95),
+    0 50px 120px rgba(0,0,0,.85),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+.iphone::before {
+  content: ''; position: absolute;
+  top: 16px; left: 50%; transform: translateX(-50%);
+  width: 88px; height: 26px;
+  background: #000; border-radius: 14px; z-index: 4;
+}
+.iphone-screen { border-radius: 34px; overflow: hidden; display: block; }
+.iphone-screen img { display: block; width: 100%; height: auto; }
+@keyframes phone-float {
+  0%,100% { transform: translateY(0) rotate(.7deg); }
+  50%      { transform: translateY(-14px) rotate(-.5deg); }
+}
+.iphone-float { animation: phone-float 6s ease-in-out infinite; }
+
+/* ────────── HERO SHOWCASE ────────── */
+.hero-showcase {
+  position: relative; margin-top: 56px;
+  display: flex; justify-content: center; z-index: 2;
+}
+.hero-phone-wrap { position: relative; display: inline-block; }
+.hero-phone-wrap .iphone-screen { width: 230px; }
+.hero-widget {
+  position: absolute;
+  background: rgba(20,18,14,.84);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(247,242,236,.13);
+  border-radius: 16px; padding: 12px 16px;
+  white-space: nowrap; z-index: 10;
+  box-shadow: 0 16px 40px rgba(0,0,0,.6);
+}
+.hw-earn  { top: 80px;   right: -148px; animation: widget-float 5s ease-in-out infinite; }
+.hw-days  { bottom: 170px; left: -158px; animation: widget-float 5s ease-in-out infinite; animation-delay: -2.5s; }
+.hw-sync  { bottom: 72px;  right: -128px; animation: widget-float 4s ease-in-out infinite; animation-delay: -1.2s; }
+.widget-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .1em;
+  text-transform: uppercase; color: rgba(247,242,236,.38); margin-bottom: 4px;
+}
+.widget-val {
+  font-family: var(--nu); font-size: 17px; font-weight: 800;
+  color: var(--cream); line-height: 1.1;
+}
+.widget-sub {
+  font-family: var(--nu); font-size: 11px;
+  color: rgba(247,242,236,.45); margin-top: 2px;
+}
+@keyframes widget-float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+@media (max-width:1040px) {
+  .hw-earn,.hw-days,.hw-sync { display: none; }
+}
+@media (max-width:980px) {
+  .hero-phone-wrap .iphone-screen { width: 190px; }
+}
+@media (max-width:480px) {
+  .hero-phone-wrap .iphone-screen { width: 162px; }
+  .hero-phone-wrap .iphone { border-radius: 36px; }
+  .hero-phone-wrap .iphone::before { width: 72px; height: 22px; top: 12px; }
+  .hero-showcase { margin-top: 36px; }
+}
+
+/* ────────── SCREENSHOT CAROUSEL ────────── */
+.screens-section {
+  padding: 80px 0 96px;
+  background: var(--dark); overflow: hidden;
+}
+.screens-head {
+  text-align: center; margin-bottom: 48px;
+  padding: 0 clamp(20px,5vw,80px);
+}
+.screens-head h2 { color: var(--cream); }
+.screens-track-wrap { position: relative; }
+.screens-track-wrap::before,
+.screens-track-wrap::after {
+  content: ''; position: absolute; top: 0; bottom: 0; width: 120px; z-index: 2; pointer-events: none;
+}
+.screens-track-wrap::before { left:0;  background: linear-gradient(to right, var(--dark), transparent); }
+.screens-track-wrap::after  { right:0; background: linear-gradient(to left,  var(--dark), transparent); }
+.screens-track {
+  display: flex; gap: 20px; padding: 12px 20px;
+  animation: ss-scroll 55s linear infinite;
+  width: max-content;
+}
+.screens-track:hover { animation-play-state: paused; cursor: default; }
+@keyframes ss-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ss-item { flex-shrink: 0; }
+.ss-item .iphone-screen { width: 158px; }
+.ss-item .iphone { border-radius: 36px; padding: 8px; }
+.ss-item .iphone::before { width: 70px; height: 21px; top: 11px; }
 </style>
 </head>
 <body>
@@ -738,6 +875,9 @@ footer {
 
 <!-- ────────── HERO ────────── -->
 <section class="hero">
+  <div class="hero-blob hero-blob-1"></div>
+  <div class="hero-blob hero-blob-2"></div>
+  <div class="hero-blob hero-blob-3"></div>
   <div class="hero-glow"></div>
   <div class="hero-glow2"></div>
 
@@ -775,11 +915,29 @@ footer {
     <span class="hero-pill">iPhone &amp; iPad</span>
   </div>
 
-  <div class="hero-scroll fade-up" style="transition-delay:.8s">
-    <span>Scroll</span>
-    <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-      <path d="M1 1.5l6 6 6-6" stroke="#9E8878" stroke-width="1.6" stroke-linecap="round"/>
-    </svg>
+  <div class="hero-showcase fade-up" style="transition-delay:.82s">
+    <div class="hero-phone-wrap">
+      <div class="hero-widget hw-earn">
+        <div class="widget-label">Total earned</div>
+        <div class="widget-val">26 050 €</div>
+        <div class="widget-sub">46 paid days · 2026</div>
+      </div>
+      <div class="hero-widget hw-days">
+        <div class="widget-label">Today</div>
+        <div class="widget-val">Post Sync Session</div>
+        <div class="widget-sub">27 Aug · 10:00 – 17:00 · 700 €</div>
+      </div>
+      <div class="hero-widget hw-sync">
+        <div class="widget-label">iCloud</div>
+        <div class="widget-val">☁ Syncing</div>
+        <div class="widget-sub">All devices up to date</div>
+      </div>
+      <div class="iphone iphone-float">
+        <div class="iphone-screen">
+          <img src="assets/screens/screen-days.jpg" alt="SoundSheet — Shooting Days"/>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -860,6 +1018,31 @@ footer {
   </div>
 </section>
 
+<!-- ────────── SCREENSHOT CAROUSEL ────────── -->
+<section class="screens-section">
+  <div class="screens-head">
+    <span class="label fade-up" style="color:var(--muted)">In the app</span>
+    <h2 class="section-title fade-up" style="transition-delay:.1s;color:var(--cream)">Built for the set.</h2>
+  </div>
+  <div class="screens-track-wrap">
+    <div class="screens-track">
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-days.jpg" alt="Shooting Days"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-finance.jpg" alt="Finance"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-sfx.jpg" alt="SFX Notes"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-inventory.jpg" alt="Inventory"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-checklist.jpg" alt="Kit Checklist"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-scenes.jpg" alt="Scenes"/></div></div></div>
+      <!-- duplicate for seamless loop -->
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-days.jpg" alt="Shooting Days"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-finance.jpg" alt="Finance"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-sfx.jpg" alt="SFX Notes"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-inventory.jpg" alt="Inventory"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-checklist.jpg" alt="Kit Checklist"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-scenes.jpg" alt="Scenes"/></div></div></div>
+    </div>
+  </div>
+</section>
+
 <div class="sep sep-dark"></div>
 
 <!-- ────────── FINANCE SPOTLIGHT ────────── -->
@@ -880,26 +1063,9 @@ footer {
       </ul>
     </div>
     <div class="spot-visual fade-up" style="transition-delay:.15s">
-      <div class="finance-card">
-        <div class="finance-total"><sup>$</sup>26,400</div>
-        <div class="finance-subtitle">46 paid days · Summer 2026</div>
-        <div class="finance-sep"></div>
-        <div class="finance-bars">
-          <div class="finance-bar-row">
-            <span class="finance-bar-label">June</span>
-            <div class="finance-bar-track"><div class="finance-bar-fill" style="width:100%"></div></div>
-            <span class="finance-bar-amount">$9,800</span>
-          </div>
-          <div class="finance-bar-row">
-            <span class="finance-bar-label">July</span>
-            <div class="finance-bar-track"><div class="finance-bar-fill" style="width:85%"></div></div>
-            <span class="finance-bar-amount">$8,370</span>
-          </div>
-          <div class="finance-bar-row">
-            <span class="finance-bar-label">August</span>
-            <div class="finance-bar-track"><div class="finance-bar-fill" style="width:84%"></div></div>
-            <span class="finance-bar-amount">$8,230</span>
-          </div>
+      <div class="iphone iphone-float">
+        <div class="iphone-screen" style="width:240px">
+          <img src="assets/screens/screen-finance.jpg" alt="Finance — Earnings"/>
         </div>
       </div>
     </div>
@@ -925,26 +1091,9 @@ footer {
       </ul>
     </div>
     <div class="spot-visual fade-up" style="transition-delay:.15s">
-      <div class="sfx-card">
-        <div class="sfx-header">Session → Forest Ambiences</div>
-        <div class="sfx-section">SFX Records</div>
-        <div class="sfx-row">
-          <div class="sfx-row-name">Morning Birds</div>
-          <div class="sfx-row-sub">MS · MKH50 · Pending</div>
-        </div>
-        <div class="sfx-row" style="opacity:.6">
-          <div class="sfx-row-name">Wind Through Trees</div>
-          <div class="sfx-row-sub">Stereo · Exterior · Done</div>
-        </div>
-        <div class="sfx-row" style="opacity:.32">
-          <div class="sfx-row-name">Stream Close</div>
-          <div class="sfx-row-sub">LCR · DPA 4060 · Done</div>
-        </div>
-        <div class="sfx-tags">
-          <span class="sfx-tag">Ambience</span>
-          <span class="sfx-tag">Exterior</span>
-          <span class="sfx-tag">UCS</span>
-          <span class="sfx-tag">Pending</span>
+      <div class="iphone iphone-float">
+        <div class="iphone-screen" style="width:240px">
+          <img src="assets/screens/screen-sfx.jpg" alt="SFX Notes — Recording Categories"/>
         </div>
       </div>
     </div>
@@ -970,26 +1119,10 @@ footer {
       </ul>
     </div>
     <div class="spot-visual fade-up" style="transition-delay:.15s">
-      <div class="sfx-card">
-        <div class="sfx-header">📍 Scout — St. James Church</div>
-        <div class="sfx-section">Location Notes</div>
-        <div class="sfx-row">
-          <div class="sfx-row-name">Main Nave</div>
-          <div class="scout-row-meta"><span class="risk-badge risk-low">Low risk</span> Interior</div>
+      <div class="iphone iphone-float">
+        <div class="iphone-screen" style="width:240px">
+          <img src="assets/screens/screen-scenes.jpg" alt="Scout — Scenes"/>
         </div>
-        <div class="sfx-row" style="opacity:.7">
-          <div class="sfx-row-name">Bell Tower</div>
-          <div class="scout-row-meta"><span class="risk-badge risk-medium">Medium</span> Wind</div>
-        </div>
-        <div class="sfx-row" style="opacity:.45">
-          <div class="sfx-row-name">Courtyard</div>
-          <div class="scout-row-meta"><span class="risk-badge risk-high">High risk</span> Road traffic</div>
-        </div>
-        <div class="sfx-section" style="margin-top:4px">Prep Checklist</div>
-        <div class="scout-check-row">4× Lectrosonics SSM</div>
-        <div class="scout-check-row">Boom + Rycote mount</div>
-        <div class="scout-check-row pending">Backup lavs</div>
-        <div style="height:8px"></div>
       </div>
     </div>
   </div>
