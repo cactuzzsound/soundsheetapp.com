@@ -23,6 +23,15 @@ const CONTAINER = "iCloud.cactuzzsound.SoundSheet";
 // data goes to development). Remove/blank it for production releases.
 const DEFAULT_ENV = "production";
 
+// ── Firestore (Android app) fallback ──────────────────────────────────────────
+// The iOS app publishes gear pages to CloudKit; the Android app publishes the
+// same data to Firebase Firestore at public_gear/{slug}. When CloudKit has no
+// page for a slug we fall back to Firestore so both platforms render here.
+// The API key is the public Firebase web key (safe to expose); reads are gated
+// by the Firestore rule:  match /public_gear/{doc} { allow read: if true; }
+const FIRESTORE_PROJECT = "soundsheet";
+const FIRESTORE_KEY = "AIzaSyBp_4nkd5Kex5bNBmQ4MUvof-9z9cLjIQ8";
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -58,45 +67,88 @@ async function handleGearApi(url, env) {
   const slug = decodeURIComponent(url.pathname.replace("/api/gear/", "").replace(/\/$/, ""));
   if (!slug) return json({ error: "missing slug" }, 400);
 
-  if (!env.CK_KEY_ID || !env.CK_PRIVATE_KEY) {
-    return json({ error: "Server not configured (missing CloudKit key)." }, 500);
-  }
+  // 1. Try CloudKit (iOS-published pages) if a server key is configured.
+  if (env.CK_KEY_ID && env.CK_PRIVATE_KEY) {
+    try {
+      const pageRes = await ckQuery(env, "GearPage", [
+        { fieldName: "slug", comparator: "EQUALS", fieldValue: { value: slug, type: "STRING" } },
+      ]);
+      const page = pageRes.records?.[0];
+      if (page) {
+        const ownerName   = page.fields.ownerName?.value   || "Sound Professional";
+        const isPublished = (page.fields.isPublished?.value ?? 0) ? true : false;
+        const lastUpdated = page.fields.lastUpdated?.value || null;
 
-  try {
-    // 1. GearPage for this slug
-    const pageRes = await ckQuery(env, "GearPage", [
-      { fieldName: "slug", comparator: "EQUALS", fieldValue: { value: slug, type: "STRING" } },
-    ]);
-    const page = pageRes.records?.[0];
-    if (!page) return json({ found: false }, 404);
+        if (!isPublished) {
+          return json({ found: true, isPublished: false, ownerName });
+        }
 
-    const ownerName   = page.fields.ownerName?.value   || "Sound Professional";
-    const isPublished = (page.fields.isPublished?.value ?? 0) ? true : false;
-    const lastUpdated = page.fields.lastUpdated?.value || null;
-
-    if (!isPublished) {
-      return json({ found: true, isPublished: false, ownerName });
+        const itemsRes = await ckQuery(env, "PublicGearItem",
+          [{ fieldName: "pageSlug", comparator: "EQUALS", fieldValue: { value: slug, type: "STRING" } }],
+          [{ fieldName: "sortOrder", ascending: true }]
+        );
+        const items = (itemsRes.records || []).map((r) => ({
+          name:          r.fields.name?.value          || "",
+          brand:         r.fields.brand?.value         || "",
+          category:      r.fields.category?.value       || "",
+          itemType:      r.fields.itemType?.value       || "",
+          quantityOwned: r.fields.quantityOwned?.value  || 1,
+          photoURL:      r.fields.photoAsset?.value?.downloadURL || null,
+        }));
+        return json({ found: true, isPublished: true, ownerName, lastUpdated, items });
+      }
+      // No CloudKit page → fall through to Firestore.
+    } catch (err) {
+      // CloudKit failed → try Firestore before giving up.
+      const fs = await firestoreGear(slug).catch(() => null);
+      if (fs) return json(fs);
+      return json({ error: String(err && err.message || err) }, 502);
     }
-
-    // 2. PublicGearItem records for this slug
-    const itemsRes = await ckQuery(env, "PublicGearItem",
-      [{ fieldName: "pageSlug", comparator: "EQUALS", fieldValue: { value: slug, type: "STRING" } }],
-      [{ fieldName: "sortOrder", ascending: true }]
-    );
-
-    const items = (itemsRes.records || []).map((r) => ({
-      name:          r.fields.name?.value          || "",
-      brand:         r.fields.brand?.value         || "",
-      category:      r.fields.category?.value       || "",
-      itemType:      r.fields.itemType?.value       || "",
-      quantityOwned: r.fields.quantityOwned?.value  || 1,
-      photoURL:      r.fields.photoAsset?.value?.downloadURL || null,
-    }));
-
-    return json({ found: true, isPublished: true, ownerName, lastUpdated, items });
-  } catch (err) {
-    return json({ error: String(err && err.message || err) }, 502);
   }
+
+  // 2. Firestore fallback (Android-published pages).
+  const fs = await firestoreGear(slug).catch(() => null);
+  if (fs) return json(fs);
+
+  return json({ found: false }, 404);
+}
+
+// ── Firestore read (Android app: public_gear/{slug}) ──────────────────────────
+async function firestoreGear(slug) {
+  const url = `https://firestore.googleapis.com/v1/projects/${FIRESTORE_PROJECT}`
+    + `/databases/(default)/documents/public_gear/${encodeURIComponent(slug)}`
+    + `?key=${FIRESTORE_KEY}`;
+  const res = await fetch(url);
+  if (!res.ok) return null;               // 404 / 403 → treat as "no page here"
+  const doc = await res.json();
+  const f = doc.fields;
+  if (!f) return null;
+
+  const fv = (v) => v == null ? undefined
+    : (v.stringValue ?? (v.integerValue != null ? Number(v.integerValue) : undefined)
+       ?? v.booleanValue ?? v.doubleValue);
+
+  const ownerName   = fv(f.ownerName) || "Sound Professional";
+  const isPublished = fv(f.isPublished) ? true : false;
+  const lastUpdated = fv(f.updatedAt) ?? null;
+
+  if (!isPublished) return { found: true, isPublished: false, ownerName };
+
+  const raw = f.items?.arrayValue?.values || [];
+  const items = raw
+    .map((v) => v.mapValue?.fields || {})
+    .map((mf) => ({
+      name:          fv(mf.name)          || "",
+      brand:         fv(mf.brand)         || "",
+      category:      fv(mf.category)      || "",
+      itemType:      fv(mf.itemType)      || "",
+      quantityOwned: fv(mf.quantityOwned) || 1,
+      sortOrder:     fv(mf.sortOrder)     || 0,
+      photoURL:      fv(mf.photoURL)      || null,
+    }))
+    .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+
+  return { found: true, isPublished: true, ownerName, lastUpdated, items };
 }
 
 // ── CloudKit signed query ─────────────────────────────────────────────────────
