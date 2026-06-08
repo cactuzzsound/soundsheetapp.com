@@ -27,10 +27,10 @@ const DEFAULT_ENV = "production";
 // The iOS app publishes gear pages to CloudKit; the Android app publishes the
 // same data to Firebase Firestore at public_gear/{slug}. When CloudKit has no
 // page for a slug we fall back to Firestore so both platforms render here.
-// The API key is the public Firebase web key (safe to expose); reads are gated
-// by the Firestore rule:  match /public_gear/{doc} { allow read: if true; }
+// The Firebase web key is read from the FIRESTORE_KEY Cloudflare var (kept out
+// of source control); reads are gated by the Firestore rule:
+//   match /public_gear/{doc} { allow read: if true; }
 const FIRESTORE_PROJECT = "soundsheet";
-const FIRESTORE_KEY = "AIzaSyBp_4nkd5Kex5bNBmQ4MUvof-9z9cLjIQ8";
 
 export default {
   async fetch(request, env) {
@@ -107,17 +107,19 @@ async function handleGearApi(url, env) {
   }
 
   // 2. Firestore fallback (Android-published pages).
-  const fs = await firestoreGear(slug).catch(() => null);
+  const fs = await firestoreGear(slug, env).catch(() => null);
   if (fs) return json(fs);
 
   return json({ found: false }, 404);
 }
 
 // ── Firestore read (Android app: public_gear/{slug}) ──────────────────────────
-async function firestoreGear(slug) {
+async function firestoreGear(slug, env) {
+  const key = env.FIRESTORE_KEY;
+  if (!key) return null;                    // not configured → skip Firestore fallback
   const url = `https://firestore.googleapis.com/v1/projects/${FIRESTORE_PROJECT}`
     + `/databases/(default)/documents/public_gear/${encodeURIComponent(slug)}`
-    + `?key=${FIRESTORE_KEY}`;
+    + `?key=${encodeURIComponent(key)}`;
   const res = await fetch(url);
   if (!res.ok) return null;               // 404 / 403 → treat as "no page here"
   const doc = await res.json();
