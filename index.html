@@ -716,6 +716,94 @@ footer {
   .footer-links { gap: 16px; }
 }
 
+/* ── GOOGLE PLAY BUTTON ── */
+.btn-gplay {
+  display: flex; align-items: center; gap: 14px;
+  padding: 13px 26px;
+  background: rgba(247,242,236,.06);
+  border: 1.5px solid rgba(247,242,236,.14);
+  border-radius: 14px; text-decoration: none;
+  transition: border-color .2s, background .2s, transform .2s;
+}
+.btn-gplay:hover { border-color: rgba(247,242,236,.26); transform: translateY(-1px); }
+.btn-gplay svg { width: 26px; height: 26px; flex-shrink: 0; }
+.btn-gplay-small {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .12em;
+  text-transform: uppercase; color: rgba(247,242,236,.38); display: block;
+}
+.btn-gplay-big {
+  font-family: var(--nu); font-size: 19px; font-weight: 800;
+  color: rgba(247,242,236,.55); letter-spacing: -.01em; display: block; line-height: 1.1;
+}
+.btn-gplay-badge {
+  font-family: var(--mono); font-size: 8px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--amber);
+  padding: 2px 7px; border: 1px solid rgba(212,162,82,.3);
+  border-radius: 100px; margin-top: 3px; display: inline-block;
+}
+
+/* ── BACKGROUND FLOATING PHONES ── */
+.hero-bg-phones {
+  position: absolute; inset: 0;
+  pointer-events: none; overflow: hidden; z-index: 1;
+}
+.bg-phone {
+  position: absolute;
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 18px; padding: 5px;
+  animation: bg-drift linear infinite;
+}
+.bg-phone-screen { border-radius: 13px; overflow: hidden; display: block; }
+.bg-phone-screen img { display: block; width: 100%; height: auto; }
+.bgp-1 { width: 64px; top: 10%; animation-duration: 24s; animation-delay: 0s; }
+.bgp-2 { width: 80px; top: 46%; animation-duration: 31s; animation-delay: -11s; }
+.bgp-3 { width: 55px; top: 72%; animation-duration: 19s; animation-delay: -7s; }
+.bgp-4 { width: 70px; top: 26%; animation-duration: 36s; animation-delay: -18s; }
+.bgp-5 { width: 50px; top: 60%; animation-duration: 22s; animation-delay: -3s; }
+@keyframes bg-drift {
+  0%   { left: -120px; opacity: 0; transform: rotate(-6deg) translateY(0); }
+  6%   { opacity: 1; }
+  94%  { opacity: 1; }
+  100% { left: calc(100% + 120px); opacity: 0; transform: rotate(5deg) translateY(-28px); }
+}
+@media (max-width:768px) { .hero-bg-phones { display: none; } }
+
+/* ── HERO PHONE SLIDESHOW ── */
+.hero-slideshow { position: relative; }
+.hero-slideshow .iphone-screen {
+  width: 230px;
+  position: relative;
+  aspect-ratio: 390 / 844;
+}
+.hero-slideshow .iphone-screen img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.hero-slideshow .iphone-screen img.active { opacity: 1; }
+@media (max-width:980px) { .hero-slideshow .iphone-screen { width: 190px; } }
+@media (max-width:480px) { .hero-slideshow .iphone-screen { width: 162px; } }
+
+/* ── VIDEO THUMBNAIL ── */
+.video-yt-thumb {
+  position: relative; display: block; text-decoration: none;
+  background-size: cover; background-position: center;
+}
+.video-yt-thumb::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(0,0,0,.38); border-radius: var(--r);
+}
+.video-yt-thumb .video-placeholder { position: relative; z-index: 2; }
+.video-yt-thumb .video-placeholder-icon {
+  border-color: rgba(247,242,236,.55);
+  background: rgba(247,242,236,.1);
+  backdrop-filter: blur(8px);
+}
+.video-yt-thumb .video-placeholder-label { color: rgba(247,242,236,.85); font-size: 13px; }
+
 /* ────────── ANIMATED BLOBS ────────── */
 @keyframes blob-drift {
   0%,100% { transform: translate(0,0) scale(1); }
@@ -875,6 +963,13 @@ footer {
 
 <!-- ────────── HERO ────────── -->
 <section class="hero">
+  <div class="hero-bg-phones">
+    <div class="bg-phone bgp-1"><div class="bg-phone-screen"><img src="assets/screens/screen-finance.jpg" alt=""/></div></div>
+    <div class="bg-phone bgp-2"><div class="bg-phone-screen"><img src="assets/screens/screen-sfx.jpg" alt=""/></div></div>
+    <div class="bg-phone bgp-3"><div class="bg-phone-screen"><img src="assets/screens/screen-checklist.jpg" alt=""/></div></div>
+    <div class="bg-phone bgp-4"><div class="bg-phone-screen"><img src="assets/screens/screen-scenes.jpg" alt=""/></div></div>
+    <div class="bg-phone bgp-5"><div class="bg-phone-screen"><img src="assets/screens/screen-inventory.jpg" alt=""/></div></div>
+  </div>
   <div class="hero-blob hero-blob-1"></div>
   <div class="hero-blob hero-blob-2"></div>
   <div class="hero-blob hero-blob-3"></div>
@@ -897,7 +992,6 @@ footer {
   </p>
 
   <div class="hero-actions fade-up" style="transition-delay:.52s">
-    <!-- TODO: Replace href with actual App Store link -->
     <a href="https://apps.apple.com/app/soundsheet/id6764545870" class="btn-appstore">
       <svg viewBox="0 0 24 24" fill="var(--ink)">
         <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
@@ -905,6 +999,19 @@ footer {
       <span class="btn-appstore-text">
         <span class="btn-appstore-small">Download on the</span>
         <span class="btn-appstore-big">App Store</span>
+      </span>
+    </a>
+    <a class="btn-gplay" href="#" aria-label="Coming soon on Google Play">
+      <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+        <path d="M3.18 1.28 13.64 12 3.18 22.72A2 2 0 0 1 2 21V3a2 2 0 0 1 1.18-1.72z" fill="rgba(247,242,236,.35)"/>
+        <path d="M17.28 8.36 5.54 1.74l9.22 9.22 2.52-2.6z" fill="rgba(247,242,236,.45)"/>
+        <path d="M20.5 10.5a2 2 0 0 1 0 3l-3.22 1.64-2.52-2.6 5.26-2.52-.52-.52z" fill="rgba(247,242,236,.35)"/>
+        <path d="M5.54 22.26 17.28 15.64l-2.52-2.6-9.22 9.22z" fill="rgba(247,242,236,.45)"/>
+      </svg>
+      <span>
+        <span class="btn-gplay-small">Coming soon on</span>
+        <span class="btn-gplay-big">Google Play</span>
+        <span class="btn-gplay-badge">Soon</span>
       </span>
     </a>
   </div>
@@ -932,9 +1039,14 @@ footer {
         <div class="widget-val">☁ Syncing</div>
         <div class="widget-sub">All devices up to date</div>
       </div>
-      <div class="iphone iphone-float">
+      <div class="iphone iphone-float hero-slideshow">
         <div class="iphone-screen">
-          <img src="assets/screens/screen-days.jpg" alt="SoundSheet — Shooting Days"/>
+          <img src="assets/screens/screen-days.jpg"      alt="Shooting Days" class="active"/>
+          <img src="assets/screens/screen-finance.jpg"   alt="Finance"/>
+          <img src="assets/screens/screen-sfx.jpg"       alt="SFX Notes"/>
+          <img src="assets/screens/screen-inventory.jpg" alt="Inventory"/>
+          <img src="assets/screens/screen-checklist.jpg" alt="Kit Checklist"/>
+          <img src="assets/screens/screen-scenes.jpg"    alt="Scenes"/>
         </div>
       </div>
     </div>
@@ -1229,9 +1341,14 @@ footer {
   </div>
 
   <div class="video-grid" style="max-width:680px">
-    <div class="video-wrap fade-up" style="transition-delay:.15s">
-      <iframe src="https://www.youtube.com/embed/PBXv0NFIKk4?rel=0" allowfullscreen loading="lazy"></iframe>
-    </div>
+    <a class="video-wrap video-yt-thumb fade-up" href="https://www.youtube.com/watch?v=PBXv0NFIKk4" target="_blank" rel="noopener" style="transition-delay:.15s; background-image:url(https://img.youtube.com/vi/PBXv0NFIKk4/maxresdefault.jpg)">
+      <div class="video-placeholder">
+        <div class="video-placeholder-icon">
+          <svg width="14" height="16" viewBox="0 0 14 16" fill="rgba(247,242,236,.9)"><path d="M0 0l14 8-14 8V0z"/></svg>
+        </div>
+        <span class="video-placeholder-label">Watch on YouTube ↗</span>
+      </div>
+    </a>
   </div>
 </section>
 
@@ -1302,6 +1419,42 @@ document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
 document.querySelectorAll('.hero .fade-up').forEach((el, i) => {
   setTimeout(() => el.classList.add('vis'), 80 + i * 100);
 });
+
+// ── Hero phone slideshow ──
+(function () {
+  const slides = document.querySelectorAll('.hero-slideshow .iphone-screen img');
+  if (!slides.length) return;
+  let idx = 0;
+  setInterval(() => {
+    slides[idx].classList.remove('active');
+    idx = (idx + 1) % slides.length;
+    slides[idx].classList.add('active');
+  }, 3200);
+})();
+
+// ── Screenshot carousel — JS scroll-driven ──
+(function () {
+  const track = document.querySelector('.screens-track');
+  if (!track) return;
+  track.style.animation = 'none';
+  const SPEED = 90; // px per second (auto)
+  const SCROLL_FACTOR = 0.35; // extra px per px of page scroll
+  let baseX = 0;
+  let lastTime = performance.now();
+
+  function tick(now) {
+    const dt = (now - lastTime) / 1000;
+    lastTime = now;
+    baseX += SPEED * dt;
+    const halfW = track.scrollWidth / 2;
+    if (baseX >= halfW) baseX -= halfW;
+    const scrollBonus = window.scrollY * SCROLL_FACTOR;
+    const totalX = (baseX + scrollBonus) % halfW;
+    track.style.transform = `translateX(${-totalX}px)`;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
 </script>
 </body>
 </html>
