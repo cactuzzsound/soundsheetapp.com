@@ -1202,13 +1202,19 @@ footer {
       <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-inventory.jpg" alt="Inventory"/></div></div></div>
       <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-checklist.jpg" alt="Kit Checklist"/></div></div></div>
       <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-scenes.jpg" alt="Scenes"/></div></div></div>
-      <!-- duplicate for seamless loop -->
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-day.jpg" alt="Day Detail"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-scene-detail.jpg" alt="Scene Detail"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-settings.jpg" alt="Settings"/></div></div></div>
+      <!-- exact duplicate for seamless loop -->
       <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-days.jpg" alt="Shooting Days"/></div></div></div>
       <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-finance.jpg" alt="Finance"/></div></div></div>
       <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-sfx.jpg" alt="SFX Notes"/></div></div></div>
       <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-inventory.jpg" alt="Inventory"/></div></div></div>
       <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-checklist.jpg" alt="Kit Checklist"/></div></div></div>
       <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-scenes.jpg" alt="Scenes"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-day.jpg" alt="Day Detail"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-scene-detail.jpg" alt="Scene Detail"/></div></div></div>
+      <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-settings.jpg" alt="Settings"/></div></div></div>
     </div>
   </div>
 </section>
@@ -1490,24 +1496,33 @@ document.querySelectorAll('.hero .fade-up').forEach((el, i) => {
   }, 3200);
 })();
 
-// ── Screenshot carousel — JS scroll-driven, seamless ──
+// ── Screenshot carousel — seamless, scroll-boosted ──
 window.addEventListener('load', function () {
   const track = document.querySelector('.screens-track');
   if (!track) return;
   track.style.animation = 'none';
-  const SPEED = 90;         // px/s auto-scroll
-  const SCROLL_K = 0.35;    // extra px per page-scroll px
-  let baseX = 0;
+  track.getBoundingClientRect(); // force layout
+  const halfW = track.scrollWidth / 2;
+
+  const SPEED = 80;       // px/s auto-scroll
+  const SCROLL_K = 0.45;  // extra px added per scrolled px
+  let pos = 0;
+  let lastScrollY = window.scrollY;
   let lastTime = performance.now();
-  const halfW = track.scrollWidth / 2; // images are loaded at this point
+
+  // Scroll adds directly to pos (stays inside [0, halfW))
+  window.addEventListener('scroll', function () {
+    const delta = window.scrollY - lastScrollY;
+    lastScrollY = window.scrollY;
+    pos = (pos + delta * SCROLL_K + halfW) % halfW;
+  }, { passive: true });
 
   function tick(now) {
     const dt = (now - lastTime) / 1000;
     lastTime = now;
-    baseX += SPEED * dt;
-    if (baseX >= halfW) baseX -= halfW;
-    const total = (baseX + window.scrollY * SCROLL_K) % halfW;
-    track.style.transform = `translateX(${-total}px)`;
+    pos += SPEED * dt;
+    if (pos >= halfW) pos -= halfW;
+    track.style.transform = `translateX(${-pos}px)`;
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
