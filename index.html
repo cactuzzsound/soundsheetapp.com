@@ -239,6 +239,9 @@ nav.scrolled {
 @media (max-width: 960px) {
   .feature-grid { grid-template-columns: repeat(2, 1fr); }
 }
+@media (min-width: 961px) {
+  .feature-card:last-child:nth-child(3n+1) { grid-column: 2; }
+}
 @media (max-width: 420px) {
   .feature-grid { gap: 12px; }
   .feature-card { padding: 20px 16px 22px; }
@@ -1153,8 +1156,8 @@ footer {
 
     <div class="feature-card fade-up" style="transition-delay:.33s">
       <div class="feature-card-dot" style="background:rgba(201,136,123,.12)">🎬</div>
-      <h3>Scenes</h3>
-      <p>Track shooting scenes per day — scene numbers, status, and notes. Import your scene breakdown directly from CSV.</p>
+      <h3>Scenes &amp; Takes</h3>
+      <p>Track shooting scenes with ADR, wild lines, and critical flags. Log takes per scene — status, timecode, file ref — and export a Sound Report CSV for post.</p>
       <div class="feature-card-bar" style="background:linear-gradient(90deg,#C9887B,transparent)"></div>
     </div>
 
@@ -1184,6 +1187,13 @@ footer {
       <h3>Workspace Sharing</h3>
       <p>Share your workspace with a colleague. Work together on the same days, gear list, and templates in real time.</p>
       <div class="feature-card-bar" style="background:linear-gradient(90deg,#D4A252,transparent)"></div>
+    </div>
+
+    <div class="feature-card fade-up" style="transition-delay:.61s">
+      <div class="feature-card-dot" style="background:rgba(139,174,198,.12)">📅</div>
+      <h3>Calendar Sync</h3>
+      <p>All your shooting days sync automatically to Apple Calendar. See your schedule alongside personal events — no manual entry.</p>
+      <div class="feature-card-bar" style="background:linear-gradient(90deg,#8BAEC6,transparent)"></div>
     </div>
 
   </div>
@@ -1299,6 +1309,34 @@ footer {
       <div class="iphone iphone-float">
         <div class="iphone-screen" style="width:240px">
           <img src="assets/screens/screen-scenes.jpg" alt="Scout — Scenes"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep sep-dark"></div>
+
+<!-- ────────── LOG TAKES SPOTLIGHT ────────── -->
+<section class="spot-wrap-cream" id="logtakes">
+  <div class="spot rev">
+    <div class="spot-text">
+      <span class="label fade-up" style="color:var(--muted)">Log Takes</span>
+      <h2 class="fade-up" style="transition-delay:.1s">Every take,<br/>logged in real time.</h2>
+      <p class="fade-up" style="transition-delay:.2s">
+        No clipboards. No spreadsheets. SoundSheet puts a fast, distraction-free take logger right on set — so your takes are tracked as the camera rolls, ready for post before the day wraps.
+      </p>
+      <ul class="fade-up" style="transition-delay:.3s">
+        <li><span class="spot-check"></span>Open from the Days screen — on set in seconds</li>
+        <li><span class="spot-check"></span>Circled, OK, NG, False Start, Hold — one tap per status</li>
+        <li><span class="spot-check"></span>Timecode auto-filled from the clock, auto file name per take</li>
+        <li><span class="spot-check"></span>Export Sound Report CSV for the dialogue editor or post team</li>
+      </ul>
+    </div>
+    <div class="spot-visual fade-up" style="transition-delay:.15s">
+      <div class="iphone iphone-float">
+        <div class="iphone-screen" style="width:240px">
+          <img src="assets/screens/screen-scene-detail.jpg" alt="Log Takes — Scene detail"/>
         </div>
       </div>
     </div>
