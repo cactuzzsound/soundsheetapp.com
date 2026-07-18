@@ -601,6 +601,27 @@ nav.scrolled {
   color: rgba(158,136,120,.55);
 }
 
+/* ── WALKTHROUGHS ── */
+.walkthroughs {
+  background: var(--dark);
+  padding: var(--sp) clamp(20px, 5vw, 80px);
+}
+.walkthroughs .section-title { color: var(--cream); }
+.walkthrough-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+@media (max-width: 860px) {
+  .walkthrough-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .walkthrough-grid { grid-template-columns: 1fr; }
+  .video-grid { grid-template-columns: 1fr; }
+}
+
 /* ── CTA ── */
 .cta-section {
   background: var(--dark);
@@ -1440,15 +1461,65 @@ footer {
 <section class="media" id="videos">
   <div class="section-head">
     <span class="label fade-up">See it in action</span>
-    <h2 class="section-title fade-up" style="transition-delay:.1s">Watch the walkthrough.</h2>
+    <h2 class="section-title fade-up" style="transition-delay:.1s">Watch the app.</h2>
   </div>
 
-  <div class="video-grid" style="max-width:680px">
+  <div class="video-grid" style="max-width:1000px">
     <a class="video-wrap video-yt-thumb fade-up" href="https://www.youtube.com/watch?v=PBXv0NFIKk4" target="_blank" rel="noopener" style="transition-delay:.15s; background-image:url(https://img.youtube.com/vi/PBXv0NFIKk4/maxresdefault.jpg)">
       <div class="video-placeholder">
         <div class="video-placeholder-icon">
           <svg width="14" height="16" viewBox="0 0 14 16" fill="rgba(247,242,236,.9)"><path d="M0 0l14 8-14 8V0z"/></svg>
         </div>
+        <span class="video-placeholder-label">Watch on YouTube ↗</span>
+      </div>
+    </a>
+    <a class="video-wrap video-yt-thumb fade-up" href="https://www.youtube.com/watch?v=-CmnPno4XLY" target="_blank" rel="noopener" style="transition-delay:.25s; background-image:url(https://img.youtube.com/vi/-CmnPno4XLY/maxresdefault.jpg)">
+      <div class="video-placeholder">
+        <div class="video-placeholder-icon">
+          <svg width="14" height="16" viewBox="0 0 14 16" fill="rgba(247,242,236,.9)"><path d="M0 0l14 8-14 8V0z"/></svg>
+        </div>
+        <span class="video-placeholder-label">Watch on YouTube ↗</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<div class="sep sep-dark"></div>
+
+<!-- ────────── WALKTHROUGHS ────────── -->
+<section class="walkthroughs" id="walkthroughs">
+  <div class="section-head">
+    <span class="label fade-up" style="color:var(--muted)">Step by step</span>
+    <h2 class="section-title fade-up" style="transition-delay:.1s">Walkthrough videos.</h2>
+  </div>
+  <div class="walkthrough-grid">
+    <a class="video-wrap video-yt-thumb fade-up" href="https://www.youtube.com/watch?v=SUZ3sSw_R8I" target="_blank" rel="noopener" style="transition-delay:.08s; background-image:url(https://img.youtube.com/vi/SUZ3sSw_R8I/maxresdefault.jpg)">
+      <div class="video-placeholder">
+        <div class="video-placeholder-icon"><svg width="14" height="16" viewBox="0 0 14 16" fill="rgba(247,242,236,.9)"><path d="M0 0l14 8-14 8V0z"/></svg></div>
+        <span class="video-placeholder-label">Watch on YouTube ↗</span>
+      </div>
+    </a>
+    <a class="video-wrap video-yt-thumb fade-up" href="https://www.youtube.com/watch?v=J5jo2W---mM" target="_blank" rel="noopener" style="transition-delay:.16s; background-image:url(https://img.youtube.com/vi/J5jo2W---mM/maxresdefault.jpg)">
+      <div class="video-placeholder">
+        <div class="video-placeholder-icon"><svg width="14" height="16" viewBox="0 0 14 16" fill="rgba(247,242,236,.9)"><path d="M0 0l14 8-14 8V0z"/></svg></div>
+        <span class="video-placeholder-label">Watch on YouTube ↗</span>
+      </div>
+    </a>
+    <a class="video-wrap video-yt-thumb fade-up" href="https://www.youtube.com/watch?v=toXxC7Yju-E" target="_blank" rel="noopener" style="transition-delay:.24s; background-image:url(https://img.youtube.com/vi/toXxC7Yju-E/maxresdefault.jpg)">
+      <div class="video-placeholder">
+        <div class="video-placeholder-icon"><svg width="14" height="16" viewBox="0 0 14 16" fill="rgba(247,242,236,.9)"><path d="M0 0l14 8-14 8V0z"/></svg></div>
+        <span class="video-placeholder-label">Watch on YouTube ↗</span>
+      </div>
+    </a>
+    <a class="video-wrap video-yt-thumb fade-up" href="https://www.youtube.com/watch?v=SvIspo-ojlM" target="_blank" rel="noopener" style="transition-delay:.32s; background-image:url(https://img.youtube.com/vi/SvIspo-ojlM/maxresdefault.jpg)">
+      <div class="video-placeholder">
+        <div class="video-placeholder-icon"><svg width="14" height="16" viewBox="0 0 14 16" fill="rgba(247,242,236,.9)"><path d="M0 0l14 8-14 8V0z"/></svg></div>
+        <span class="video-placeholder-label">Watch on YouTube ↗</span>
+      </div>
+    </a>
+    <a class="video-wrap video-yt-thumb fade-up" href="https://www.youtube.com/watch?v=LuGNCQDg7NI" target="_blank" rel="noopener" style="transition-delay:.40s; background-image:url(https://img.youtube.com/vi/LuGNCQDg7NI/maxresdefault.jpg)">
+      <div class="video-placeholder">
+        <div class="video-placeholder-icon"><svg width="14" height="16" viewBox="0 0 14 16" fill="rgba(247,242,236,.9)"><path d="M0 0l14 8-14 8V0z"/></svg></div>
         <span class="video-placeholder-label">Watch on YouTube ↗</span>
       </div>
     </a>
