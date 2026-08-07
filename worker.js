@@ -49,6 +49,19 @@ export default {
       return handleGearApi(url, env);
     }
 
+    // ── API: collaborative checklists ─────────────────────────────────────────
+    // Read-write shared kit lists in Firestore under shared_checklists/{code}.
+    // Serves the web tick-off page and the iOS/macOS apps (which have no Firebase
+    // SDK); the Android app talks to Firestore directly.
+    if (url.pathname.startsWith("/api/checklist")) {
+      return handleChecklistApi(request, url, env);
+    }
+
+    // ── Collaborative checklist viewer page (/c/<code>) ───────────────────────
+    if (/^\/c\/[^/]+\/?$/.test(url.pathname)) {
+      return env.ASSETS.fetch(new Request(new URL("/c/", url), request));
+    }
+
     // ── Gear viewer page (any /gear/<slug> except the static example) ────────
     // Serve the viewer's index.html while keeping the browser URL on the slug.
     // We fetch "/gear/" (not "/gear/index.html") because Cloudflare 307-redirects
@@ -151,6 +164,212 @@ async function firestoreGear(slug, env) {
     .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
   return { found: true, isPublished: true, ownerName, lastUpdated, items };
+}
+
+// ── Collaborative checklists ──────────────────────────────────────────────────
+//
+// Firestore layout (capability model: the unguessable code IS the doc id):
+//   shared_checklists/{code}                 { title, ownerName, updatedAt }
+//   shared_checklists/{code}/items/{itemId}  { name, category, quantity, order,
+//                                              checked, checkedBy, addedBy,
+//                                              isRequest, note, updatedAt }
+// Firestore rule needed (add in the Firebase console):
+//   match /shared_checklists/{code} {
+//     allow read, write: if true;
+//     match /items/{itemId} { allow read, write: if true; }
+//   }
+
+const CHECKLIST_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // no easily-confused chars
+
+function json(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "content-type": "application/json; charset=utf-8" },
+  });
+}
+
+async function handleChecklistApi(request, url, env) {
+  if (!env.FIRESTORE_KEY) return json({ error: "not_configured" }, 503);
+  // /api/checklist            → collection ops (POST create)
+  // /api/checklist/:code      → GET
+  // /api/checklist/:code/items→ POST add
+  // /api/checklist/:code/items/:id → PATCH / DELETE
+  const parts = url.pathname.replace(/^\/api\/checklist\/?/, "").split("/").filter(Boolean);
+  const method = request.method;
+  try {
+    if (parts.length === 0 && method === "POST") return checklistCreate(request, env);
+    const code = parts[0];
+    if (!code) return json({ error: "bad_request" }, 400);
+    if (parts.length === 1 && method === "GET") return checklistGet(code, env);
+    if (parts[1] === "items" && parts.length === 2 && method === "POST") {
+      return checklistAddItem(code, request, env);
+    }
+    if (parts[1] === "items" && parts.length === 3) {
+      const id = parts[2];
+      if (method === "PATCH") return checklistPatchItem(code, id, request, env);
+      if (method === "DELETE") return checklistDeleteItem(code, id, env);
+    }
+    return json({ error: "not_found" }, 404);
+  } catch (e) {
+    return json({ error: "server_error", detail: String(e) }, 500);
+  }
+}
+
+async function checklistCreate(request, env) {
+  const body = await request.json().catch(() => ({}));
+  const code = Array.from({ length: 8 },
+    () => CHECKLIST_ALPHABET[Math.floor(Math.random() * CHECKLIST_ALPHABET.length)]).join("");
+  const now = new Date().toISOString();
+  await fsSet(env, `shared_checklists/${code}`, {
+    title: String(body.title || "Kit checklist"),
+    ownerName: String(body.ownerName || ""),
+    updatedAt: { t: now },
+  });
+  const items = Array.isArray(body.items) ? body.items : [];
+  await Promise.all(items.map((it, i) => fsSet(env,
+    `shared_checklists/${code}/items/${crypto.randomUUID()}`, {
+      name: String(it.name || ""),
+      category: String(it.category || ""),
+      quantity: Number(it.quantity || 1),
+      order: Number(it.order != null ? it.order : i),
+      checked: false,
+      checkedBy: "",
+      addedBy: String(body.ownerName || ""),
+      isRequest: false,
+      note: "",
+      updatedAt: { t: now },
+    })));
+  return json({ code });
+}
+
+async function checklistGet(code, env) {
+  const meta = await fsGet(env, `shared_checklists/${code}`);
+  if (!meta) return json({ found: false }, 404);
+  const items = await fsListItems(env, code);
+  return json({ found: true, code, ...meta, items });
+}
+
+async function checklistAddItem(code, request, env) {
+  const meta = await fsGet(env, `shared_checklists/${code}`);
+  if (!meta) return json({ found: false }, 404);
+  const body = await request.json().catch(() => ({}));
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+  await fsSet(env, `shared_checklists/${code}/items/${id}`, {
+    name: String(body.name || ""),
+    category: String(body.category || ""),
+    quantity: Number(body.quantity || 1),
+    order: Number(body.order || 9999),
+    checked: false,
+    checkedBy: "",
+    addedBy: String(body.addedBy || ""),
+    isRequest: body.isRequest !== false, // items added after creation default to a request
+    note: String(body.note || ""),
+    updatedAt: { t: now },
+  });
+  await fsTouch(env, code);
+  return json({ id });
+}
+
+async function checklistPatchItem(code, id, request, env) {
+  const body = await request.json().catch(() => ({}));
+  const fields = {};
+  if ("checked" in body) { fields.checked = !!body.checked; fields.checkedBy = String(body.checkedBy || ""); }
+  if ("name" in body) fields.name = String(body.name);
+  if ("quantity" in body) fields.quantity = Number(body.quantity);
+  if ("note" in body) fields.note = String(body.note);
+  if (Object.keys(fields).length === 0) return json({ error: "no_fields" }, 400);
+  fields.updatedAt = { t: new Date().toISOString() };
+  await fsPatch(env, `shared_checklists/${code}/items/${id}`, fields);
+  await fsTouch(env, code);
+  return json({ ok: true });
+}
+
+async function checklistDeleteItem(code, id, env) {
+  await fsDelete(env, `shared_checklists/${code}/items/${id}`);
+  await fsTouch(env, code);
+  return json({ ok: true });
+}
+
+async function fsTouch(env, code) {
+  await fsPatch(env, `shared_checklists/${code}`, { updatedAt: { t: new Date().toISOString() } });
+}
+
+// ── Firestore REST value (de)serialisation ────────────────────────────────────
+// A plain JS value maps to a Firestore typed value. `{ t: iso }` is our marker
+// for a timestamp so callers don't have to spell out timestampValue.
+function fsEncodeValue(v) {
+  if (v && typeof v === "object" && "t" in v) return { timestampValue: v.t };
+  if (typeof v === "boolean") return { booleanValue: v };
+  if (typeof v === "number") {
+    return Number.isInteger(v) ? { integerValue: String(v) } : { doubleValue: v };
+  }
+  return { stringValue: v == null ? "" : String(v) };
+}
+function fsEncodeFields(obj) {
+  const fields = {};
+  for (const [k, v] of Object.entries(obj)) fields[k] = fsEncodeValue(v);
+  return { fields };
+}
+function fsDecodeValue(v) {
+  if (v == null) return undefined;
+  if (v.stringValue != null) return v.stringValue;
+  if (v.booleanValue != null) return v.booleanValue;
+  if (v.integerValue != null) return Number(v.integerValue);
+  if (v.doubleValue != null) return v.doubleValue;
+  if (v.timestampValue != null) return v.timestampValue;
+  return undefined;
+}
+function fsDecodeFields(doc) {
+  const out = {};
+  for (const [k, v] of Object.entries(doc.fields || {})) out[k] = fsDecodeValue(v);
+  return out;
+}
+
+function fsBase(env) {
+  return `https://firestore.googleapis.com/v1/projects/${FIRESTORE_PROJECT}/databases/(default)/documents`;
+}
+async function fsSet(env, path, obj) {
+  // PATCH with no updateMask creates or fully replaces the document.
+  const res = await fetch(`${fsBase(env)}/${path}?key=${encodeURIComponent(env.FIRESTORE_KEY)}`, {
+    method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(fsEncodeFields(obj)),
+  });
+  if (!res.ok) throw new Error(`fsSet ${path}: ${res.status}`);
+}
+async function fsPatch(env, path, obj) {
+  const mask = Object.keys(obj).map((k) => `updateMask.fieldPaths=${encodeURIComponent(k)}`).join("&");
+  const res = await fetch(
+    `${fsBase(env)}/${path}?key=${encodeURIComponent(env.FIRESTORE_KEY)}&${mask}`, {
+    method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(fsEncodeFields(obj)),
+  });
+  if (!res.ok) throw new Error(`fsPatch ${path}: ${res.status}`);
+}
+async function fsGet(env, path) {
+  const res = await fetch(`${fsBase(env)}/${path}?key=${encodeURIComponent(env.FIRESTORE_KEY)}`);
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`fsGet ${path}: ${res.status}`);
+  return fsDecodeFields(await res.json());
+}
+async function fsDelete(env, path) {
+  const res = await fetch(`${fsBase(env)}/${path}?key=${encodeURIComponent(env.FIRESTORE_KEY)}`,
+    { method: "DELETE" });
+  if (!res.ok && res.status !== 404) throw new Error(`fsDelete ${path}: ${res.status}`);
+}
+async function fsListItems(env, code) {
+  const res = await fetch(
+    `${fsBase(env)}/shared_checklists/${code}/items?key=${encodeURIComponent(env.FIRESTORE_KEY)}&pageSize=300`);
+  if (!res.ok) return [];
+  const data = await res.json();
+  const docs = data.documents || [];
+  return docs.map((d) => {
+    const f = fsDecodeFields(d);
+    f.id = d.name.split("/").pop();
+    return f;
+  }).sort((a, b) => (a.order || 0) - (b.order || 0));
 }
 
 // ── CloudKit signed query ─────────────────────────────────────────────────────
