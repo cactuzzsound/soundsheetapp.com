@@ -184,7 +184,10 @@ const CHECKLIST_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // no easily-confu
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { "content-type": "application/json; charset=utf-8" },
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+    },
   });
 }
 
@@ -473,9 +476,3 @@ function base64ToBytes(b64) {
 }
 
 // ── JSON response helper ──────────────────────────────────────────────────────
-function json(obj, status = 200) {
-  return new Response(JSON.stringify(obj), {
-    status,
-    headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
-  });
-}
