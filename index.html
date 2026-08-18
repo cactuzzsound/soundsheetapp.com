@@ -986,6 +986,60 @@ footer {
 .ss-item .iphone-screen { width: 158px; }
 .ss-item .iphone { border-radius: 36px; padding: 8px; }
 .ss-item .iphone::before { width: 70px; height: 21px; top: 11px; }
+
+/* ────────── DOT GRID — dark sections ────────── */
+.spot-wrap-dark,
+.gear-section,
+.screens-section,
+.walkthroughs,
+.media,
+.cta-section { position: relative; }
+
+.spot-wrap-dark::before,
+.gear-section::before,
+.screens-section::before,
+.walkthroughs::before,
+.media::before,
+.cta-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(247,242,236,.046) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none; z-index: 0;
+}
+
+/* ────────── FEATURE CARD SPOTLIGHT ────────── */
+.feature-card {
+  background:
+    radial-gradient(
+      380px circle at var(--card-x, -9999px) var(--card-y, -9999px),
+      rgba(139,174,198,.11),
+      transparent 40%
+    ),
+    var(--white);
+}
+.feature-card-bar { transition: filter .3s; }
+.feature-card:hover .feature-card-bar { filter: brightness(1.5); }
+
+/* ────────── HERO WORD REVEAL ────────── */
+.hero-word { display: block; }
+
+/* ────────── BUTTON PRESS ────────── */
+.btn-appstore:active { transform: translateY(0) scale(.96) !important; }
+.btn-gplay:active    { transform: translateY(0) scale(.96) !important; }
+.nav-cta:active      { opacity: .7; transform: translateY(0) scale(.95) !important; }
+.gear-example-btn:active { transform: translateY(0) scale(.97) !important; }
+
+/* ────────── NAV LINK UNDERLINE HOVER ────────── */
+.nav-links a { position: relative; }
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: -3px; left: 0; right: 0;
+  height: 1px; background: var(--cream);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .25s ease;
+}
+.nav-links a:hover::after { transform: scaleX(1); }
 </style>
 <link rel="canonical" href="https://soundsheet.app/"/>
 <meta name="twitter:card" content="summary_large_image"/>
@@ -1105,10 +1159,10 @@ footer {
 
   <div class="label hero-overline fade-up" style="transition-delay:.1s">For Sound Professionals</div>
 
-  <h1 class="fade-up" style="transition-delay:.22s">
-    <span class="w1">Track.</span><br/>
-    <span class="w2">Invoice.</span><br/>
-    <span class="w3">Document.</span>
+  <h1>
+    <span class="w1 hero-word fade-up">Track.</span>
+    <span class="w2 hero-word fade-up">Invoice.</span>
+    <span class="w3 hero-word fade-up">Document.</span>
   </h1>
 
   <p class="hero-desc fade-up" style="transition-delay:.38s">
@@ -1644,6 +1698,19 @@ document.querySelectorAll('.hero .fade-up').forEach((el, i) => {
 
 // ── Screenshot carousel — CSS-native seamless loop ──
 // CSS handles -50% translateX perfectly (no floating point drift)
+
+// ── Feature card spotlight glow ──
+document.querySelectorAll('.feature-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--card-x', `${e.clientX - r.left}px`);
+    card.style.setProperty('--card-y', `${e.clientY - r.top}px`);
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.setProperty('--card-x', '-9999px');
+    card.style.setProperty('--card-y', '-9999px');
+  });
+});
 </script>
 </body>
 </html>
