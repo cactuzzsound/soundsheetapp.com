@@ -15,3 +15,7 @@ package-lock.json
 .gitignore
 .assetsignore
 .DS_Store
+_to_delete_gitlocks
+_to_delete_gitlocks/**
+*.seo-backup*
+*.seo-backup*/**
