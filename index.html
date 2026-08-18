@@ -987,6 +987,47 @@ footer {
 .ss-item .iphone { border-radius: 36px; padding: 8px; }
 .ss-item .iphone::before { width: 70px; height: 21px; top: 11px; }
 
+/* ── IMAGE TRAIL (desktop) ── */
+.trail-stage {
+  position: relative; width: 100%; height: 520px;
+  overflow: hidden; cursor: none; display: none;
+}
+.trail-hint {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; transition: opacity .6s; z-index: 0;
+}
+.trail-hint span {
+  font-size: 12px; letter-spacing: .16em; text-transform: uppercase;
+  color: rgba(247,242,236,.28);
+}
+.trail-hint.hidden { opacity: 0; }
+.trail-cursor {
+  position: absolute; width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(247,242,236,.55); transform: translate(-50%,-50%);
+  pointer-events: none; opacity: 0; transition: opacity .2s; z-index: 10;
+}
+.trail-phone {
+  position: absolute;
+  transform: translate(-50%,-50%) rotate(var(--rot,0deg)) scale(.12);
+  opacity: 0;
+  animation: trail-pop 1.15s cubic-bezier(.23,1,.32,1) forwards;
+  pointer-events: none; z-index: 2;
+}
+@keyframes trail-pop {
+  0%   { transform:translate(-50%,-50%) rotate(var(--rot)) scale(.12); opacity:0; }
+  16%  { transform:translate(-50%,-58%) rotate(var(--rot)) scale(1);   opacity:1; }
+  60%  { transform:translate(-50%,-72%) rotate(var(--rot)) scale(.93); opacity:.88; }
+  100% { transform:translate(-50%,-96%) rotate(var(--rot)) scale(.75); opacity:0; }
+}
+.trail-phone .iphone-screen { width: 132px; }
+.trail-phone .iphone { border-radius: 30px; padding: 7px; }
+.trail-phone .iphone::before { width: 58px; height: 17px; top: 9px; }
+@media (hover:hover) and (pointer:fine) {
+  .trail-stage { display: block; }
+  .screens-track-wrap { display: none; }
+}
+
 /* ────────── DOT GRID — dark sections ────────── */
 .spot-wrap-dark,
 .gear-section,
@@ -1316,6 +1357,12 @@ footer {
     <span class="label fade-up" style="color:var(--muted)">In the app</span>
     <h2 class="section-title fade-up" style="transition-delay:.1s;color:var(--cream)">Built for the set.</h2>
   </div>
+  <!-- Desktop: cursor image trail -->
+  <div class="trail-stage" id="trailStage" aria-hidden="true">
+    <div class="trail-hint"><span>Move your cursor</span></div>
+    <div class="trail-cursor" id="trailCursor"></div>
+  </div>
+  <!-- Mobile: seamless scroll carousel -->
   <div class="screens-track-wrap">
     <div class="screens-track">
       <div class="ss-item"><div class="iphone"><div class="iphone-screen"><img src="assets/screens/screen-days.jpg" alt="Shooting Days"/></div></div></div>
@@ -1696,8 +1743,35 @@ document.querySelectorAll('.hero .fade-up').forEach((el, i) => {
   }, 3200);
 })();
 
-// ── Screenshot carousel — CSS-native seamless loop ──
-// CSS handles -50% translateX perfectly (no floating point drift)
+// ── Image trail ──
+(function () {
+  const stage  = document.getElementById('trailStage');
+  const cursor = document.getElementById('trailCursor');
+  if (!stage || !window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  const hint    = stage.querySelector('.trail-hint');
+  const screens = [
+    'screen-days','screen-finance','screen-sfx','screen-inventory',
+    'screen-checklist','screen-scenes','screen-day','screen-scene-detail','screen-settings'
+  ];
+  let imgIdx = 0, lastX = -999, lastY = -999, hinted = false;
+  stage.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; });
+  stage.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; });
+  stage.addEventListener('mousemove', e => {
+    const r = stage.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    cursor.style.left = x + 'px'; cursor.style.top = y + 'px';
+    if (Math.hypot(x - lastX, y - lastY) < 70) return;
+    lastX = x; lastY = y;
+    if (!hinted) { hint.classList.add('hidden'); hinted = true; }
+    const el  = document.createElement('div');
+    el.className = 'trail-phone';
+    el.style.left = x + 'px'; el.style.top = y + 'px';
+    el.style.setProperty('--rot', ((Math.random() - .5) * 18) + 'deg');
+    el.innerHTML = `<div class="iphone"><div class="iphone-screen"><img src="assets/screens/${screens[imgIdx++ % screens.length]}.jpg" loading="lazy" alt=""/></div></div>`;
+    stage.appendChild(el);
+    setTimeout(() => el.remove(), 1250);
+  });
+})();
 
 // ── Feature card spotlight glow ──
 document.querySelectorAll('.feature-card').forEach(card => {
